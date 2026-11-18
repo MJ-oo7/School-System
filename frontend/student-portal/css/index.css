@@ -1,0 +1,68 @@
+@import url("../../shared/css/base.css");
+
+@layer base {
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        overscroll-behavior: none;
+    }
+    main > :first-child {
+        margin-top: 0 !important;
+    }
+    main > :last-child {
+        margin-bottom: 0 !important;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #080e1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #242a36;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #03b5d3;
+}
+
+.view-section {
+    display: none !important;
+}
+
+.view-section.active {
+    display: block !important;
+    animation: fadeInView 0.2s ease-out;
+}
+
+#auth-view.view-section.active {
+    display: flex !important;
+}
+
+.portal-tab-pane {
+    display: none !important;
+}
+
+.portal-tab-pane.active {
+    display: block !important;
+    animation: fadeInView 0.2s ease-out;
+}
+
+@keyframes fadeInView {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

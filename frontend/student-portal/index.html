@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal — Academic Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../shared/js/api.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen">
+
+    <!-- =====================================================================
+         VIEW 1: STUDENT AUTHENTICATION GATE (Shown before Student Sign-In)
+         ===================================================================== -->
+    <div id="auth-view" class="view-section active min-h-screen flex flex-col justify-between">
+        <header class="sticky top-0 z-40 h-16 w-full px-gutter-lg bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container shadow-[0_0_12px_rgba(0,242,254,0.2)]">
+                    <span class="material-symbols-outlined text-2xl">school</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Student Portal</span>
+                    <span class="font-label-caps text-label-caps text-secondary-fixed-dim uppercase tracking-wider">Student Academic Console</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                    <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                    <span data-theme-label>Light Mode</span>
+                </button>
+                <a href="../registrar-portal/admin.html" id="admin-portal-link" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary font-label-code text-label-code flex items-center gap-1.5 transition-all">
+                    <span>Registrar &amp; Admissions Terminal</span>
+                    <span class="material-symbols-outlined text-[16px] text-secondary">arrow_forward</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto w-full px-4 lg:px-8 py-10 flex-1 flex flex-col justify-center gap-6">
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg relative overflow-hidden shadow-xl">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-container"></div>
+                <div class="flex items-start gap-space-md pl-space-xs">
+                    <div class="p-2 rounded bg-surface-container-high text-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[24px]">verified_user</span>
+                    </div>
+                    <div>
+                        <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-wider">Student Identity Gateway</span>
+                        <h1 class="font-headline-lg text-headline-lg text-tertiary tracking-tight mt-0.5">Candidate &amp; Student Portal</h1>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+                            Once your walk-in enrollment application is <strong class="text-secondary">APPROVED</strong> by the Registrar Board and your Student Portal account is provisioned, sign in below with your issued credentials to inspect your academic dossier, enrolled subjects, payment receipts, and 4-month semestral tuition ledger.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-md w-full mx-auto bg-surface-container-lowest rounded-xl p-space-lg shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-primary-container"></div>
+                <div class="flex items-center gap-space-sm mb-2">
+                    <span class="material-symbols-outlined text-secondary text-[22px]">account_circle</span>
+                    <h2 class="font-headline-md text-headline-md text-tertiary">Student Sign In</h2>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+                    Authenticate with your provisioned institutional email and password.
+                </p>
+
+                <div class="space-y-space-md">
+                    <div>
+                        <label for="login-email" class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1.5">
+                            Student Portal Email
+                        </label>
+                        <input type="email" id="login-email" placeholder="student@inst.edu" class="w-full bg-surface-container text-tertiary font-label-code text-label-code px-3.5 py-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                    </div>
+
+                    <div>
+                        <label for="login-password" class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1.5">
+                            Password
+                        </label>
+                        <input type="password" id="login-password" placeholder="Enter your password" class="w-full bg-surface-container text-tertiary font-body-sm text-body-sm px-3.5 py-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                    </div>
+
+                    <button type="button" onclick="loginStudent()" class="w-full py-3 px-space-md rounded-lg bg-primary-container hover:bg-secondary text-on-primary-container font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                        <span class="material-symbols-outlined text-[18px]">login</span>
+                        <span>Sign In to Student Portal</span>
+                    </button>
+                </div>
+                <div id="login-result" class="mt-3"></div>
+            </div>
+        </main>
+
+        <footer class="py-6 text-center font-label-code text-label-code text-outline border-t border-outline-variant/15">
+            <p>INSTITUTE OF TECHNOLOGY • STUDENT ACADEMIC &amp; TUITION PORTAL v4.8</p>
+        </footer>
+    </div>
+
+    <!-- =====================================================================
+         VIEW 2: AUTHENTICATED STUDENT PORTAL SHELL (Stitch Obsidian Cyan Design)
+         ===================================================================== -->
+    <div id="dashboard-view" class="view-section hidden">
+        <!-- Fixed Left Sidebar -->
+        <aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest z-50 flex flex-col justify-between py-6 px-4 shadow-[0_1px_8px_rgba(0,0,0,0.2)]">
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-3 px-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
+                            <span class="material-symbols-outlined text-2xl">school</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Student Portal</span>
+                            <span class="font-label-caps text-label-caps text-secondary-fixed-dim uppercase tracking-wider">Institute of Technology</span>
+                        </div>
+                    </div>
+                    <div class="inline-flex items-center justify-between px-3 py-1.5 rounded-lg bg-surface-container-low">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                            <span class="font-label-code text-label-code text-on-surface-variant font-medium" id="sidebar-term-label">SY 2026-2027 1ST SEM</span>
+                        </div>
+                        <span class="font-label-caps text-label-caps text-primary-container uppercase">Active</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="flex flex-col gap-1 px-1" id="student-sidebar-nav">
+                    <button type="button" onclick="switchPortalTab('dashboard')" data-tab="dashboard" class="portal-nav-btn w-full text-left flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg transition-colors bg-surface-container-high text-primary-container font-semibold">
+                        <span class="material-symbols-outlined text-xl">dashboard</span>
+                        <span class="font-body-md text-body-md">Dashboard</span>
+                    </button>
+                    <button type="button" onclick="switchPortalTab('grades')" data-tab="grades" class="portal-nav-btn w-full text-left flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-xl">menu_book</span>
+                        <span class="font-body-md text-body-md">Grades</span>
+                    </button>
+                    <button type="button" onclick="switchPortalTab('schedule')" data-tab="schedule" class="portal-nav-btn w-full text-left flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-xl">calendar_clock</span>
+                        <span class="font-body-md text-body-md">Schedule</span>
+                    </button>
+                    <button type="button" onclick="switchPortalTab('payment-history')" data-tab="payment-history" class="portal-nav-btn w-full text-left flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-xl">receipt_long</span>
+                        <span class="font-body-md text-body-md">Payment History</span>
+                    </button>
+                    <button type="button" onclick="switchPortalTab('ledger')" data-tab="ledger" class="portal-nav-btn w-full text-left flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+                        <span class="font-body-md text-body-md">Ledger</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer User Profile & Logout -->
+            <div class="flex flex-col gap-2 px-1">
+                <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-full bg-primary-container text-on-primary font-bold flex items-center justify-center font-label-code text-label-code shrink-0" id="sidebar-user-initials">ST</div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-body-sm text-body-sm text-on-surface font-semibold truncate tracking-tight" id="sidebar-user-name">Student Name</span>
+                            <span class="font-label-code text-label-code text-secondary-fixed-dim truncate" id="session-user-id">USER-0000</span>
+                        </div>
+                    </div>
+                    <button onclick="logoutStudent()" title="Sign Out" class="text-on-surface-variant hover:text-error p-1.5 rounded-lg hover:bg-surface-container-high transition-colors shrink-0" type="button">
+                        <span class="material-symbols-outlined text-lg">logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area (pl-72) -->
+        <div class="pl-72">
+            <!-- Fixed Top Header -->
+            <header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.2)]">
+                <div class="h-16 w-full px-8 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Student Console</span>
+                        <span class="text-outline-variant font-label-code text-label-code">/</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                            <span class="font-body-sm text-body-sm text-primary font-medium tracking-tight" id="top-breadcrumb-current">Academic Overview</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <span class="material-symbols-outlined text-primary-container text-base">verified</span>
+                            <span class="font-label-code text-label-code text-on-surface-variant" id="header-app-id-badge">Dossier: APP-0000</span>
+                        </div>
+                        <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                            <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                            <span data-theme-label>Light Mode</span>
+                        </button>
+                        <button onclick="loadStudentPortalData()" title="Sync with Admissions &amp; Tuition Core" class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-primary font-label-code text-label-code flex items-center gap-1.5 transition-colors" type="button">
+                            <span class="material-symbols-outlined text-base text-secondary">sync</span>
+                            <span>Sync Records</span>
+                        </button>
+                        <button onclick="logoutStudent()" class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-error font-label-code text-label-code flex items-center gap-1.5 transition-colors" type="button">
+                            <span class="material-symbols-outlined text-base text-error">logout</span>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="relative pt-16 bg-surface w-full min-h-screen">
+
+                <!-- =========================================================
+                     TAB 1: DASHBOARD (student_portal_dashboard)
+                     ========================================================= -->
+                <div id="tab-dashboard" class="portal-tab-pane active">
+                    <div class="relative w-full overflow-hidden px-6 lg:px-10 pt-8 pb-12 flex flex-col gap-8 max-w-[1600px] mx-auto">
+                        <div class="absolute -top-32 right-1/4 w-96 h-96 bg-primary-container/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+                        <div class="absolute top-48 left-10 w-72 h-72 bg-secondary/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+                        <!-- Top Greeting & Header Bar -->
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+                                    <span class="font-label-caps text-label-caps text-secondary-fixed-dim uppercase tracking-wider">Terminal Node Active • Real-time Admissions &amp; Ledger Sync</span>
+                                </div>
+                                <h1 class="font-headline-xl text-headline-xl text-tertiary tracking-tight font-bold">
+                                    Welcome back, <span class="text-primary-container" id="welcome-user-text">STUDENT</span>
+                                </h1>
+                                <p class="font-body-md text-body-md text-on-surface-variant">
+                                    Everything you need for your enrolled degree program, subjects, and semestral tuition in one place.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-start md:self-auto">
+                                <div class="bg-surface-container-low px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
+                                    <div class="flex flex-col text-right">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Operational Term</span>
+                                        <span class="font-label-code text-label-code text-primary font-semibold" id="dash-operational-term">1ST SEMESTER 2026–2027</span>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                        <span class="material-symbols-outlined text-xl">verified_user</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student Profile Overview Card -->
+                        <div class="relative bg-surface-container-low rounded-xl p-6 lg:p-7 shadow-md overflow-hidden">
+                            <div class="absolute top-0 right-0 w-80 h-full opacity-10 pointer-events-none flex items-center justify-end pr-4">
+                                <svg class="text-primary-container" fill="none" height="120" viewBox="0 0 240 120" width="240">
+                                    <path d="M0 20 H80 L110 50 H190 L210 30 H240" stroke="currentColor" stroke-dasharray="4 2" stroke-width="1.5"></path>
+                                    <path d="M40 90 H100 L120 70 H180 L200 90 H240" stroke="currentColor" stroke-width="1.5"></path>
+                                    <circle cx="110" cy="50" fill="currentColor" r="3"></circle>
+                                    <circle cx="180" cy="70" fill="currentColor" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="flex flex-col gap-6 relative z-10">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="material-symbols-outlined text-primary-container text-base">badge</span>
+                                        <span class="font-label-caps text-label-caps text-primary-container tracking-wider uppercase font-semibold">Student Profile Overview</span>
+                                    </div>
+                                    <span class="font-label-code text-label-code px-2.5 py-0.5 rounded-full bg-surface-container-high text-secondary-fixed-dim" id="dash-dossier-sys-id">
+                                        DOSSIER: APP-0000
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                                    <!-- Student ID column -->
+                                    <div class="md:col-span-3 flex flex-col gap-1">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Student User ID</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-metric-num text-headline-lg text-primary tracking-tight font-bold" id="dash-profile-userid">USER-0000</span>
+                                            <button class="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors" onclick="copyStudentUserId()" title="Copy User ID" type="button">
+                                                <span class="material-symbols-outlined text-sm">content_copy</span>
+                                            </button>
+                                        </div>
+                                        <span class="font-label-caps text-label-caps text-secondary-fixed-dim flex items-center gap-1 mt-0.5" id="dash-profile-email">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span> VERIFIED ACCOUNT
+                                        </span>
+                                    </div>
+                                    <!-- Academic Program Column -->
+                                    <div class="md:col-span-5 flex flex-col gap-1">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Degree Program &amp; Track</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-headline-sm text-headline-sm text-tertiary font-bold tracking-tight" id="dash-profile-program">
+                                                Loading Enrolled Program...
+                                            </span>
+                                        </div>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant" id="dash-profile-docs-summary">
+                                            Physical Documents Verified: 4/4
+                                        </span>
+                                    </div>
+                                    <!-- Enrollment Status -->
+                                    <div class="md:col-span-4 flex flex-col md:items-end gap-2">
+                                        <div class="flex items-center flex-wrap gap-2">
+                                            <span class="px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-code text-label-code font-semibold" id="dash-profile-course-code">
+                                                COURSE
+                                            </span>
+                                            <span class="px-3 py-1 rounded-full bg-primary-container/15 text-primary-container font-label-code text-label-code font-bold flex items-center gap-1.5" id="dash-profile-status-badge">
+                                                <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                                                Officially Enrolled
+                                            </span>
+                                        </div>
+                                        <span class="font-label-code text-label-code text-outline" id="dash-profile-ay">
+                                            SY 2026–2027 • 1st &amp; 2nd Sem Curriculum
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Access Section -->
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-1 h-4 bg-primary-container rounded-full"></span>
+                                    <h2 class="font-headline-md text-headline-md text-tertiary font-bold tracking-tight">Quick Access</h2>
+                                </div>
+                                <span class="font-label-caps text-label-caps text-outline uppercase">Fast-path Navigation</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <!-- Card 1: View Grades -->
+                                <button type="button" onclick="switchPortalTab('grades')" class="text-left group relative bg-surface-container-low rounded-xl p-5 shadow-sm hover:shadow-xl hover:bg-surface-container transition-all duration-300 flex flex-col justify-between h-44 overflow-hidden">
+                                    <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="flex items-start justify-between w-full">
+                                        <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container group-hover:bg-primary-container group-hover:text-on-primary transition-all duration-200">
+                                            <span class="material-symbols-outlined text-2xl">school</span>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary-container transition-all">
+                                            <span class="material-symbols-outlined text-lg">arrow_outward</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold group-hover:text-primary transition-colors">View Grades</h3>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Inspect enrolled subjects and evaluation status (Grades: N/A).</p>
+                                    </div>
+                                </button>
+                                <!-- Card 2: Class Schedule -->
+                                <button type="button" onclick="switchPortalTab('schedule')" class="text-left group relative bg-surface-container-low rounded-xl p-5 shadow-sm hover:shadow-xl hover:bg-surface-container transition-all duration-300 flex flex-col justify-between h-44 overflow-hidden">
+                                    <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="flex items-start justify-between w-full">
+                                        <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container group-hover:bg-primary-container group-hover:text-on-primary transition-all duration-200">
+                                            <span class="material-symbols-outlined text-2xl">calendar_month</span>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary-container transition-all">
+                                            <span class="material-symbols-outlined text-lg">arrow_outward</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold group-hover:text-primary transition-colors">Subject Schedule</h3>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">View 1st &amp; 2nd Semester registered subjects and 21-unit load.</p>
+                                    </div>
+                                </button>
+                                <!-- Card 3: Payment History -->
+                                <button type="button" onclick="switchPortalTab('payment-history')" class="text-left group relative bg-surface-container-low rounded-xl p-5 shadow-sm hover:shadow-xl hover:bg-surface-container transition-all duration-300 flex flex-col justify-between h-44 overflow-hidden">
+                                    <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="flex items-start justify-between w-full">
+                                        <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container group-hover:bg-primary-container group-hover:text-on-primary transition-all duration-200">
+                                            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary-container transition-all">
+                                            <span class="material-symbols-outlined text-lg">arrow_outward</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold group-hover:text-primary transition-colors">Payment History</h3>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Review posted enrollment &amp; tuition payments and Official Receipts.</p>
+                                    </div>
+                                </button>
+                                <!-- Card 4: Student Ledger -->
+                                <button type="button" onclick="switchPortalTab('ledger')" class="text-left group relative bg-surface-container-low rounded-xl p-5 shadow-sm hover:shadow-xl hover:bg-surface-container transition-all duration-300 flex flex-col justify-between h-44 overflow-hidden">
+                                    <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="flex items-start justify-between w-full">
+                                        <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container group-hover:bg-primary-container group-hover:text-on-primary transition-all duration-200">
+                                            <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary-container transition-all">
+                                            <span class="material-symbols-outlined text-lg">arrow_outward</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold group-hover:text-primary transition-colors">Student Ledger</h3>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Check tuition assessments, installment credits, and running balance.</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Main Operational Grid: Enrolled Subjects & Financial Status Bento -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                            <!-- Left (7 Cols): Enrolled Subjects & Highlights -->
+                            <div class="lg:col-span-7 flex flex-col gap-4">
+                                <div class="bg-surface-container-low rounded-xl p-6 shadow-md flex flex-col gap-5">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                                <span class="material-symbols-outlined text-xl">schedule</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold">Enrolled Subjects &amp; Highlights</h3>
+                                                <span class="font-label-caps text-label-caps text-outline uppercase">Published Course Curriculum</span>
+                                            </div>
+                                        </div>
+                                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container font-label-code text-label-code text-secondary-fixed-dim">
+                                            <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                                            <span id="dash-enrolled-units-pill">21.0 Total Units Enrolled</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dynamic Subject Highlights Container -->
+                                    <div id="dash-subjects-highlight-list" class="flex flex-col gap-3">
+                                        <!-- Populated from course subjects in js/index.js -->
+                                    </div>
+
+                                    <!-- Mini Academic Load Details -->
+                                    <div class="pt-2 flex items-center justify-between border-t border-outline-variant/15">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-secondary-fixed-dim text-lg">view_list</span>
+                                            <span class="font-body-sm text-body-sm text-on-surface-variant" id="dash-active-subjects-count">7 Active Subjects Registered This Semester</span>
+                                        </div>
+                                        <button type="button" onclick="switchPortalTab('schedule')" class="font-label-code text-label-code text-primary-container hover:underline flex items-center gap-1">
+                                            Full Subject Schedule <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Verified Physical Documents Snippet (Connected to Admissions Checklist) -->
+                                <div class="bg-surface-container-low rounded-xl p-5 shadow-sm flex flex-col gap-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container shrink-0">
+                                                <span class="material-symbols-outlined text-xl">fact_check</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-body-sm text-body-sm text-tertiary font-semibold">Admissions Physical Document Checklist</span>
+                                                <span class="font-label-code text-label-code text-outline">Verified by Registrar Intake Officer</span>
+                                            </div>
+                                        </div>
+                                        <span class="font-label-code text-label-code text-primary-container bg-primary-container/10 px-2.5 py-1 rounded" id="dash-docs-badge">4 / 4 Handed In</span>
+                                    </div>
+                                    <div id="dash-docs-pills" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                        <!-- Populated from application.documents -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right (5 Cols): Tuition & Financial Status Summary -->
+                            <div class="lg:col-span-5 flex flex-col gap-4">
+                                <div class="bg-surface-container-low rounded-xl p-6 shadow-md flex flex-col gap-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                                <span class="material-symbols-outlined text-xl">payments</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold">Tuition &amp; Financial</h3>
+                                                <span class="font-label-caps text-label-caps text-outline uppercase">Assessment &amp; Installments</span>
+                                            </div>
+                                        </div>
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/10 text-primary-container font-label-code text-label-code font-bold" id="dash-financial-status-pill">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                                            Active Ledger
+                                        </span>
+                                    </div>
+
+                                    <!-- Account Running Balance Highlight -->
+                                    <div class="bg-surface-container rounded-xl p-5 flex flex-col gap-2 relative overflow-hidden">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">Outstanding Tuition Balance</span>
+                                            <span class="font-label-caps text-label-caps px-2 py-0.5 rounded bg-surface-container-high text-secondary-fixed-dim uppercase" id="dash-balance-tag">4-Month Plan</span>
+                                        </div>
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="font-metric-num text-metric-num text-primary font-bold tracking-tight" id="dash-running-balance">₱20,000.00</span>
+                                            <span class="font-label-code text-label-code text-on-surface-variant font-medium" id="dash-settled-subtext">(₱0.00 Tuition Settled)</span>
+                                        </div>
+                                        <p class="font-body-sm text-body-sm text-outline mt-1" id="dash-balance-note">
+                                            Semestral base tuition is ₱20,000.00 split into 4 monthly milestones of ₱5,000.00 each (plus ₱500.00 initial enrollment fee).
+                                        </p>
+                                    </div>
+
+                                    <!-- Installment Milestones Tracker -->
+                                    <div class="flex flex-col gap-3">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase tracking-wider">4-Month Installment Plan Tracker</span>
+                                        <div class="flex flex-col gap-2.5" id="dash-milestone-list">
+                                            <!-- Dynamically populated from payments -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Action Buttons -->
+                                    <div class="flex items-center gap-3 pt-2">
+                                        <button type="button" onclick="switchPortalTab('ledger')" class="flex-1 py-2.5 px-4 rounded-lg bg-surface-container-high hover:bg-surface-bright text-center font-label-code text-label-code text-tertiary font-semibold transition-colors flex items-center justify-center gap-2">
+                                            <span class="material-symbols-outlined text-lg">receipt</span>
+                                            Detailed Ledger
+                                        </button>
+                                        <button type="button" onclick="switchPortalTab('payment-history')" class="py-2.5 px-4 rounded-lg bg-primary-container text-on-primary hover:bg-primary-fixed-dim text-center font-label-code text-label-code font-bold transition-all shadow-[0_0_12px_rgba(0,242,254,0.3)] flex items-center justify-center gap-1.5">
+                                            <span class="material-symbols-outlined text-lg">receipt_long</span>
+                                            Receipts
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Navigation to Enrolled Faculty Directory -->
+                                <div class="bg-surface-container-low rounded-xl p-4 shadow-sm border border-outline-variant flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-primary font-label-code text-xs font-bold">
+                                            <span class="material-symbols-outlined text-lg">groups</span>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="font-body-sm text-body-sm text-primary font-medium">Subject Instructors &amp; Grades</span>
+                                            <span class="font-label-code text-label-code text-on-surface-variant" id="dash-faculty-count-note">Synced with Registrar Grade Encoding</span>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="switchPortalTab('grades')" class="px-3 py-1.5 rounded bg-surface-container border border-outline-variant font-label-code text-label-code text-primary hover:bg-surface-container-high">View All</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Curriculum Progress & Summary Bar Chart -->
+                        <div class="bg-surface-container-low rounded-xl p-6 shadow-md border border-outline-variant flex flex-col gap-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary-container text-lg">analytics</span>
+                                        <h3 class="font-headline-sm text-headline-sm text-tertiary font-bold" id="dash-matrix-title">Degree Curriculum Unit Matrix</h3>
+                                    </div>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant" id="dash-matrix-desc">
+                                        2-Semester Academic Curriculum Package (21.0 Units per Semester • 42.0 Total Annual Units).
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase">Average (%)</span>
+                                        <span class="font-metric-num text-metric-num text-primary font-bold text-xl leading-none" id="dash-term-gwa-val">N/A</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="w-full h-3 bg-surface-container-lowest rounded-full overflow-hidden flex border border-outline-variant">
+                                    <div class="h-full bg-primary" style="width: 50%;" title="1st Semester (21.0 Units)"></div>
+                                    <div class="h-full bg-outline" style="width: 50%;" title="2nd Semester (21.0 Units)"></div>
+                                </div>
+                                <div class="flex items-center justify-between flex-wrap gap-4 font-label-code text-label-code text-on-surface-variant pt-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+                                        <span id="dash-sem1-unit-label">1st Semester (21.0 Units)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+                                        <span id="dash-sem2-unit-label">2nd Semester (21.0 Units)</span>
+                                    </div>
+                                    <span class="text-primary font-semibold" id="dash-grades-encoded-status">Grades Sync: Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     TAB 2: GRADES & ENROLLED FACULTY DIRECTORY (student_portal_grades_instructor_directory)
+                     ========================================================= -->
+                <div id="tab-grades" class="portal-tab-pane">
+                    <div class="px-8 lg:px-12 w-full max-w-[1600px] mx-auto flex flex-col gap-6 relative z-10 py-8">
+                        <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-4">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center gap-2 font-label-code text-[11px] text-on-surface-variant uppercase tracking-widest">
+                                    <span>Student Console</span>
+                                    <span>/</span>
+                                    <span class="text-primary font-semibold">Grades &amp; Instructors</span>
+                                </div>
+                                <h1 class="font-headline-xl text-headline-lg text-primary tracking-tight font-bold">My Grades &amp; Enrolled Faculty</h1>
+                                <p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+                                    Live ledger of officially encoded semestral grades, assigned subject instructors, and rooms synchronized directly with Courses &amp; Grade Encoding.
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant font-label-code text-[12px] text-primary">
+                                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    <span>FACULTY &amp; GRADE SYNC: LIVE</span>
+                                </div>
+                                <button type="button" onclick="window.print()" class="px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-primary font-label-code text-label-code flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px]">print</span>
+                                    <span>Print Grade Slip</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Student Header Strip -->
+                        <div class="bg-surface-container-low border border-outline-variant px-4 py-3 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <span class="material-symbols-outlined text-on-surface-variant text-[20px]">badge</span>
+                                <span class="font-label-code text-label-code font-bold text-primary" id="grades-student-fullname">STUDENT</span>
+                                <span class="text-outline-variant">•</span>
+                                <span class="font-label-code text-label-code text-on-surface-variant" id="grades-student-id-label">ID: USER-0000</span>
+                                <span class="text-outline-variant">•</span>
+                                <span class="font-label-code text-label-code text-on-surface-variant" id="grades-table-program-subtitle">Course</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select id="grades-semester-select" onchange="renderGradesTab()" class="px-3 py-1.5 rounded-lg font-label-code text-label-code cursor-pointer">
+                                    <option value="1" selected>1st Semester</option>
+                                    <option value="2">2nd Semester</option>
+                                </select>
+                                <input id="grades-search-input" oninput="renderGradesTab()" class="px-3 py-1.5 rounded-lg font-label-code text-label-code w-48" placeholder="Search subject/instructor..." type="text">
+                            </div>
+                        </div>
+
+                        <!-- 4-Card KPI Strip -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl flex flex-col justify-between gap-2">
+                                <div class="flex items-center justify-between text-on-surface-variant font-label-caps text-label-caps uppercase">
+                                    <span>Term Percentage Average</span>
+                                    <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-metric-num text-display-lg-mobile font-bold text-primary" id="grades-term-gwa">N/A</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant">/ 100% Max</span>
+                                </div>
+                                <div class="bg-surface-container border border-outline-variant px-2.5 py-1 rounded font-label-code text-[11px] text-primary" id="grades-standing-tag">
+                                    Awaiting Encoded Marks
+                                </div>
+                            </div>
+
+                            <div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl flex flex-col justify-between gap-2">
+                                <div class="flex items-center justify-between text-on-surface-variant font-label-caps text-label-caps uppercase">
+                                    <span>Enrolled Units</span>
+                                    <span class="material-symbols-outlined text-[18px]">fact_check</span>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-metric-num text-display-lg-mobile font-bold text-primary" id="grades-card-units">21.0</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant">Units</span>
+                                </div>
+                                <div class="bg-surface-container border border-outline-variant px-2.5 py-1 rounded flex items-center justify-between font-label-code text-[11px]">
+                                    <span id="grades-record-count">7 Subjects</span>
+                                    <span class="text-primary font-bold" id="grades-encoded-pct">0% Encoded</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl flex flex-col justify-between gap-2">
+                                <div class="flex items-center justify-between text-on-surface-variant font-label-caps text-label-caps uppercase">
+                                    <span>Assigned Faculty</span>
+                                    <span class="material-symbols-outlined text-[18px]">groups</span>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-metric-num text-display-lg-mobile font-bold text-primary" id="grades-staffed-count">0 / 7</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant">Instructors</span>
+                                </div>
+                                <div class="bg-surface-container border border-outline-variant px-2.5 py-1 rounded font-label-code text-[11px] text-on-surface-variant">
+                                    Synced from Curriculum Registry
+                                </div>
+                            </div>
+
+                            <div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl flex flex-col justify-between gap-2">
+                                <div class="flex items-center justify-between text-on-surface-variant font-label-caps text-label-caps uppercase">
+                                    <span>Registrar Clearance</span>
+                                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                                </div>
+                                <div>
+                                    <span class="font-headline-sm text-primary font-bold block">Approved Dossier</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant" id="grades-clearance-appid">#APP-0000</span>
+                                </div>
+                                <div class="bg-surface-container border border-outline-variant px-2.5 py-1 rounded font-label-code text-[11px] text-primary flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                    ENROLLMENT ACTIVE
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Ledger + Right Institutional Scale -->
+                        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                            <div class="xl:col-span-8 flex flex-col gap-6">
+                                <!-- Semestral Course Ledger & Enrolled Instructors Table -->
+                                <div class="bg-surface-container-low border border-outline-variant rounded-xl shadow-sm flex flex-col overflow-hidden">
+                                    <div class="p-4 bg-surface-container border-b border-outline-variant flex flex-wrap items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary text-[20px]">table_chart</span>
+                                            <h2 class="font-headline-sm text-headline-sm text-primary font-bold" id="grades-table-sem-title">Semestral Course Ledger &amp; Enrolled Instructors</h2>
+                                        </div>
+                                        <span class="font-label-code text-[11px] text-on-surface-variant">Direct DB Sync</span>
+                                    </div>
+                                    <div class="overflow-x-auto bg-surface-container-lowest">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="bg-surface-container font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider border-b border-outline-variant">
+                                                    <th class="py-3 px-4">Subject &amp; Title</th>
+                                                    <th class="py-3 px-3">Units</th>
+                                                    <th class="py-3 px-4">Assigned Instructor &amp; Room</th>
+                                                    <th class="py-3 px-2 text-right">Prelim (%)</th>
+                                                    <th class="py-3 px-2 text-right">Midterm (%)</th>
+                                                    <th class="py-3 px-2 text-right">Final (%)</th>
+                                                    <th class="py-3 px-3 text-right">Avg (%)</th>
+                                                    <th class="py-3 px-4 text-right">Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="grades-table-tbody" class="divide-y divide-surface-container text-on-surface font-body-sm text-body-sm">
+                                                <!-- Dynamically populated -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Institutional Scale -->
+                            <div class="xl:col-span-4 flex flex-col gap-6">
+                                <div class="bg-surface-container-low border border-outline-variant rounded-xl shadow-sm flex flex-col overflow-hidden">
+                                    <div class="p-4 bg-surface-container border-b border-outline-variant flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary text-[20px]">menu_book</span>
+                                            <h3 class="font-headline-sm text-primary font-bold">Institutional Scale</h3>
+                                        </div>
+                                        <span class="font-label-code text-[11px] text-on-surface-variant">CHED Standard</span>
+                                    </div>
+                                    <div class="p-4 flex flex-col gap-1.5 font-label-code text-[12px]">
+                                        <div class="grid grid-cols-2 text-on-surface-variant uppercase py-1 border-b border-outline-variant text-[11px]">
+                                            <span>Percentage Range</span><span class="text-right">Remark</span>
+                                        </div>
+                                        <div class="grid grid-cols-2 py-1"><strong class="text-primary">97% – 100%</strong><span class="text-right text-primary font-bold">Excellent</span></div>
+                                        <div class="grid grid-cols-2 py-1"><strong class="text-primary">90% – 96%</strong><span class="text-right text-primary font-bold">Superior</span></div>
+                                        <div class="grid grid-cols-2 py-1"><strong class="text-primary">82% – 89%</strong><span class="text-right text-on-surface-variant">Satisfactory</span></div>
+                                        <div class="grid grid-cols-2 py-1"><strong class="text-primary">75% – 81%</strong><span class="text-right text-on-surface-variant">Passing</span></div>
+                                        <div class="grid grid-cols-2 py-1"><strong class="text-error">Below 75%</strong><span class="text-right text-error font-bold">Failed</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enrolled Faculty Directory Cards -->
+                        <div class="bg-surface-container-low border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-4" id="consultation-directory">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-[22px]">contact_mail</span>
+                                    </div>
+                                    <div>
+                                        <h2 class="font-headline-sm text-primary font-bold">Enrolled Subject Faculty Directory</h2>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant">Assigned instructors &amp; room venues configured in the Courses &amp; Curriculum Registry.</p>
+                                    </div>
+                                </div>
+                                <span class="font-label-code text-[11px] text-primary bg-surface-container border border-outline-variant px-3 py-1 rounded font-semibold">ACTIVE ROSTER</span>
+                            </div>
+                            <div id="faculty-directory-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                <!-- Dynamically populated from subjects -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     TAB 3: SCHEDULE (student_portal_schedule — with Real Instructor & Room)
+                     ========================================================= -->
+                <div id="tab-schedule" class="portal-tab-pane">
+                    <div class="w-full max-w-7xl mx-auto px-6 py-8 flex flex-col gap-6">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div class="flex flex-col gap-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-label-caps text-label-caps text-secondary-fixed-dim uppercase tracking-wider">Academics</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant">/</span>
+                                    <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-wider">Schedule</span>
+                                </div>
+                                <h1 class="font-headline-xl text-headline-xl text-primary tracking-tight font-bold">Subject Schedule &amp; Room Matrix</h1>
+                                <p class="font-body-md text-body-md text-on-surface-variant">
+                                    Your enrolled subjects, assigned instructors, and rooms synced from the Admissions Curriculum Registry (Day &amp; Time remain <span class="text-primary font-mono">N/A</span>).
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="px-3.5 py-1.5 rounded-lg bg-surface-container-low flex items-center gap-2 shadow-sm">
+                                    <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                                    <span class="font-label-code text-label-code text-secondary-fixed-dim font-medium" id="sched-course-badge">COURSE</span>
+                                </div>
+                                <div class="px-3.5 py-1.5 rounded-lg bg-surface-container-high flex items-center gap-2 shadow-sm">
+                                    <span class="material-symbols-outlined text-primary-container text-base">verified</span>
+                                    <span class="font-label-caps text-label-caps text-on-surface uppercase">Registration Validated</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Bar -->
+                        <div class="p-4 rounded-xl bg-surface-container-low flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-sm">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high">
+                                    <span class="material-symbols-outlined text-primary-container text-lg">filter_alt</span>
+                                    <span class="font-headline-sm text-headline-sm text-on-surface">Filter schedule</span>
+                                    <span class="ml-1 px-2 py-0.5 rounded-full bg-surface-container text-primary-container font-label-code text-label-code font-bold" id="sched-class-count">7 subjects</span>
+                                </div>
+                                <div class="relative flex items-center">
+                                    <select id="sched-semester-select" onchange="renderScheduleTab()" class="bg-surface-container hover:bg-surface-container-high text-on-surface font-label-code text-label-code rounded-lg px-3.5 py-2 focus:outline-none transition-colors cursor-pointer">
+                                        <option value="1" selected>1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Schedule Table View -->
+                        <div class="flex flex-col rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr class="bg-surface-container-lowest text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider">
+                                            <th class="py-3.5 px-5">Subject Code</th>
+                                            <th class="py-3.5 px-5">Description</th>
+                                            <th class="py-3.5 px-4">Units</th>
+                                            <th class="py-3.5 px-4">Room</th>
+                                            <th class="py-3.5 px-4">Day &amp; Time</th>
+                                            <th class="py-3.5 px-4">Instructor</th>
+                                            <th class="py-3.5 px-5 text-right">Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sched-table-tbody" class="divide-y divide-surface-container">
+                                        <!-- Dynamically populated from course subjects -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Academic Load Metric Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between shadow-sm">
+                                <div class="flex flex-col">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Academic Units</span>
+                                    <span class="font-metric-num text-metric-num text-primary font-bold" id="sched-total-units">21.0 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">Units</span></span>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                    <span class="material-symbols-outlined text-2xl">auto_stories</span>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between shadow-sm">
+                                <div class="flex flex-col">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Lecture Subjects</span>
+                                    <span class="font-metric-num text-metric-num text-primary font-bold" id="sched-lec-units">18.0 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">Units</span></span>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                    <span class="material-symbols-outlined text-2xl">co_present</span>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between shadow-sm">
+                                <div class="flex flex-col">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Laboratory Subjects</span>
+                                    <span class="font-metric-num text-metric-num text-secondary-fixed-dim font-bold" id="sched-lab-units">3.0 <span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">Units</span></span>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary-fixed-dim">
+                                    <span class="material-symbols-outlined text-2xl">terminal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     TAB 4: PAYMENT HISTORY (student_portal_payment_history)
+                     ========================================================= -->
+                <div id="tab-payment-history" class="portal-tab-pane">
+                    <div class="relative w-full overflow-hidden px-8 py-8 flex flex-col gap-8 max-w-[1520px] mx-auto">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Payments</span>
+                                    <span class="font-label-code text-label-code text-outline-variant">/</span>
+                                    <span class="font-label-code text-label-code text-primary-fixed-dim uppercase tracking-wider">Treasury Ledger</span>
+                                </div>
+                                <div class="flex items-baseline gap-4 flex-wrap">
+                                    <h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">Payment History</h1>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary-container font-label-code text-label-code">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+                                        SYS: POSTED &amp; VERIFIED
+                                    </span>
+                                </div>
+                                <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                                    Review your posted enrollment fee and tuition installment payments recorded by the Registrar &amp; Admissions Portal.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Filter Console & Metric Spotlight Bento -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch relative z-10">
+                            <div class="lg:col-span-8 bg-surface-container-low rounded-xl p-6 flex flex-col justify-between gap-6 shadow-md">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary-container">
+                                            <span class="material-symbols-outlined text-xl">tune</span>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Posted Treasury Records</span>
+                                            <span class="font-label-code text-label-code text-on-surface-variant">Live synchronization with Admissions &amp; Tuition Payment Ledger</span>
+                                        </div>
+                                    </div>
+                                    <span class="font-label-caps text-label-caps text-outline uppercase px-2.5 py-1 rounded bg-surface-container-lowest">Auto-sync Active</span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="flex flex-col gap-1.5 bg-surface-container-lowest p-3.5 rounded-lg">
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Academic Year &amp; Program</span>
+                                        <span class="font-headline-sm text-headline-sm text-primary font-semibold" id="payhist-program-label">2026–2027</span>
+                                    </div>
+                                    <div class="flex flex-col gap-1.5 bg-surface-container-lowest p-3.5 rounded-lg">
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Application Dossier ID</span>
+                                        <span class="font-label-code text-label-code text-secondary font-bold" id="payhist-appid-label">APP-0000</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between pt-2">
+                                    <div class="flex items-center gap-2 text-on-surface-variant font-label-code text-label-code">
+                                        <span class="material-symbols-outlined text-base text-primary-container">info</span>
+                                        Showing settled payments posted under Student ID <span class="text-primary font-bold" id="payhist-userid-label">USER-0000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Metric Spotlight Card (4 cols) -->
+                            <div class="lg:col-span-4 bg-surface-container-low rounded-xl p-6 flex flex-col justify-between shadow-md relative overflow-hidden group">
+                                <div class="flex items-start justify-between relative z-10">
+                                    <div class="flex flex-col">
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Financial Status</span>
+                                        <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Total Posted Payments</span>
+                                    </div>
+                                    <div class="w-11 h-11 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container shadow-inner">
+                                        <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                                    </div>
+                                </div>
+                                <div class="my-4 relative z-10 flex flex-col gap-1">
+                                    <span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight" id="payhist-total-amount">₱0.00</span>
+                                    <span class="font-label-code text-label-code text-primary-container flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-sm">verified</span>
+                                        Reconciled against Registrar Ledger
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between pt-3 relative z-10 bg-surface-container-lowest/60 -mx-6 -mb-6 px-6 py-3.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-base text-secondary-fixed-dim">inventory_2</span>
+                                        <span class="font-label-code text-label-code text-on-surface">Valid Receipts</span>
+                                    </div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container-highest text-secondary-fixed-dim font-label-code text-label-code font-bold" id="payhist-receipt-count">
+                                        0 receipts
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Records Data Table Container -->
+                        <div class="flex flex-col bg-surface-container-low rounded-xl overflow-hidden shadow-lg relative z-10">
+                            <div class="px-6 py-4 bg-surface-container flex flex-wrap items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+                                    <span class="font-headline-sm text-headline-sm text-primary font-bold">Official Receipts Register</span>
+                                </div>
+                            </div>
+                            <div class="w-full overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-surface-container-lowest text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider">
+                                            <th class="py-3.5 px-6 font-semibold">OR Number</th>
+                                            <th class="py-3.5 px-6 font-semibold">Description &amp; Channel</th>
+                                            <th class="py-3.5 px-6 font-semibold">Status</th>
+                                            <th class="py-3.5 px-6 font-semibold text-right">Amount</th>
+                                            <th class="py-3.5 px-6 font-semibold">Posted By</th>
+                                            <th class="py-3.5 px-6 font-semibold text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="payhist-table-tbody" class="divide-y divide-surface-container text-on-surface font-body-sm text-body-sm">
+                                        <!-- Dynamically populated from latestApp.payments -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     TAB 5: STUDENT LEDGER (student_portal_student_ledger)
+                     ========================================================= -->
+                <div id="tab-ledger" class="portal-tab-pane">
+                    <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-12 py-8 flex flex-col gap-8">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Financial Records</span>
+                                    <span class="text-outline-variant font-label-code text-label-code">/</span>
+                                    <span class="font-label-code text-label-code text-primary-container font-semibold">Ledger</span>
+                                    <span class="px-2 py-0.5 rounded-full bg-surface-container-high text-secondary-fixed-dim font-label-code text-label-code ml-2" id="ledger-header-userid">ID: USER-0000</span>
+                                </div>
+                                <h1 class="font-headline-xl text-headline-xl text-primary tracking-tight font-bold">Student Ledger</h1>
+                                <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                                    Your semestral tuition assessment (₱20,000.00), enrollment fee charge (₱500.00), and posted payment credits from the Registrar Tuition Ledger.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Top Summary Cards Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- 1. School Term Card -->
+                            <div class="p-5 rounded-xl bg-surface-container-low flex flex-col justify-between gap-4 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary-fixed-dim">
+                                            <span class="material-symbols-outlined text-lg">calendar_month</span>
+                                        </div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">School Term</span>
+                                    </div>
+                                    <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span class="font-headline-sm text-headline-sm text-primary font-bold" id="ledger-term-card">SY 2026–2027 • 1st Sem</span>
+                                    <span class="font-label-code text-label-code text-on-surface-variant">Validated: Registrar Central</span>
+                                </div>
+                            </div>
+
+                            <!-- 2. Total Debit Card -->
+                            <div class="p-5 rounded-xl bg-surface-container-low flex flex-col justify-between gap-4 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface">
+                                            <span class="material-symbols-outlined text-lg">arrow_upward</span>
+                                        </div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Debit</span>
+                                    </div>
+                                    <span class="font-label-code text-label-code px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">2 Assessments</span>
+                                </div>
+                                <div class="flex flex-col gap-0.5">
+                                    <span class="font-metric-num text-metric-num text-primary tracking-tight font-bold" id="ledger-total-debit">₱20,500.00</span>
+                                    <span class="font-body-sm text-body-sm text-on-surface-variant">Tuition (₱20,000) + Enrollment (₱500)</span>
+                                </div>
+                            </div>
+
+                            <!-- 3. Total Credit Card -->
+                            <div class="p-5 rounded-xl bg-surface-container-low flex flex-col justify-between gap-4 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                            <span class="material-symbols-outlined text-lg">arrow_downward</span>
+                                        </div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Credit</span>
+                                    </div>
+                                    <span class="font-label-code text-label-code px-2 py-0.5 rounded bg-primary-container/15 text-primary-container" id="ledger-payments-badge">0 Payments</span>
+                                </div>
+                                <div class="flex flex-col gap-0.5">
+                                    <span class="font-metric-num text-metric-num text-primary-container tracking-tight font-bold" id="ledger-total-credit">₱0.00</span>
+                                    <span class="font-body-sm text-body-sm text-on-surface-variant">Applied student settlements</span>
+                                </div>
+                            </div>
+
+                            <!-- 4. Running Balance Card -->
+                            <div class="p-5 rounded-xl bg-surface-container-low flex flex-col justify-between gap-4 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container">
+                                            <span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                                        </div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Running Balance</span>
+                                    </div>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <span class="font-metric-num text-metric-num text-primary-container tracking-tight font-bold" id="ledger-running-balance">₱20,500.00</span>
+                                    <span class="font-label-code text-label-code text-secondary-fixed-dim" id="ledger-balance-status">Remaining Semestral Balance</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Controls -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="inline-flex p-1 rounded-lg bg-surface-container-low" id="ledger-filter-tabs">
+                                <button onclick="filterLedgerRows('all')" data-filter="all" class="ledger-tab-btn px-4 py-1.5 rounded-md font-body-sm text-body-sm font-semibold bg-surface-container-high text-primary-container transition-all" type="button">
+                                    All Transactions
+                                </button>
+                                <button onclick="filterLedgerRows('assessment')" data-filter="assessment" class="ledger-tab-btn px-4 py-1.5 rounded-md font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-all" type="button">
+                                    Assessments
+                                </button>
+                                <button onclick="filterLedgerRows('payment')" data-filter="payment" class="ledger-tab-btn px-4 py-1.5 rounded-md font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-all" type="button">
+                                    Payments
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Student Ledger Transaction Table -->
+                        <div class="w-full rounded-xl bg-surface-container-low overflow-hidden shadow-lg">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-surface-container-high text-on-surface-variant">
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider">Reference / OR#</th>
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider">Particulars</th>
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider">Channel</th>
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider text-right">Debit</th>
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider text-right">Credit</th>
+                                            <th class="py-3.5 px-6 font-label-caps text-label-caps uppercase tracking-wider text-right">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ledger-table-tbody" class="divide-y divide-surface-container">
+                                        <!-- Dynamically populated from assessments + payments -->
+                                    </tbody>
+                                    <tfoot id="ledger-table-tfoot">
+                                        <!-- Summary totals row -->
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="js/index.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admissions &amp; Enrollment Portal — Unified Application &amp; Enrollment Flow</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="../shared/js/api.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/enroll.css">
+    <script src="js/enroll.js"></script>
+</head>
+
+<body class="bg-brand-black text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-cyan selection:text-black pb-16">
+
+    <!-- Institutional Top Header (Dark Cyan Edition) -->
+    <header class="sticky top-0 z-40 bg-brand-darker/90 backdrop-blur-md border-b border-brand-border px-4 lg:px-8 py-3.5 transition-all">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-cyan to-blue-600 flex items-center justify-center font-black text-brand-black shadow-cyan-sm tracking-wider text-lg font-mono">
+                    AP
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold tracking-widest text-brand-cyan uppercase bg-brand-cyan-dim px-2 py-0.5 rounded border border-brand-cyan/20">
+                            REGISTRAR &amp; ADMISSIONS — UNIFIED ENROLLMENT FLOW
+                        </span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-cyan animate-pulse"></span>
+                    </div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-white mt-0.5">
+                        Applicant Enrollment &amp; Evaluation Page
+                    </h1>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <span id="display-user-badge" class="px-3 py-1 rounded-full bg-brand-surface border border-brand-cyan/30 text-brand-cyan text-xs font-mono font-semibold">
+                    New Applicant Enrollment Flow
+                </span>
+                <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container text-primary text-xs font-mono">
+                    <span data-theme-label>Light Mode</span>
+                </button>
+                <button type="button" onclick="exitToAdminPortal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium transition">
+                    <i class="fa-solid fa-arrow-left text-[11px] text-brand-cyan"></i>
+                    <span>Back to Admissions Queue</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full px-4 lg:px-8 pt-6 space-y-6 flex-1">
+
+        <!-- TOP NAVIGATION TOOLBAR -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <button type="button" onclick="undoStep()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium transition self-start">
+                <i class="fa-solid fa-arrow-left text-[11px] text-brand-cyan"></i>
+                <span>Previous Step</span>
+            </button>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="../registrar-portal/create-account.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium transition">
+                    <i class="fa-solid fa-user-plus text-[11px] text-emerald-400"></i>
+                    <span>Create Student Account Page</span>
+                </a>
+                <a href="../registrar-portal/tuition.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium transition">
+                    <i class="fa-solid fa-coins text-[11px] text-brand-cyan"></i>
+                    <span>Tuition Fee Lookup Page</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 4-STAGE PROGRESSION INDICATOR -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div class="stepper-card active-step" id="indicator-step-1">
+                <div class="step-indicator" id="badge-step-1">1</div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block font-mono">Stage 01</span>
+                    <span class="text-xs sm:text-sm font-bold text-white">Applicant &amp; Program</span>
+                </div>
+            </div>
+            <div class="stepper-card" id="indicator-step-2">
+                <div class="step-indicator" id="badge-step-2">2</div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block font-mono">Stage 02</span>
+                    <span class="text-xs sm:text-sm font-bold text-white">Document Hand-In Checklist</span>
+                </div>
+            </div>
+            <div class="stepper-card" id="indicator-step-3">
+                <div class="step-indicator" id="badge-step-3">3</div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block font-mono">Stage 03</span>
+                    <span class="text-xs sm:text-sm font-bold text-white">Enrollment Fee (₱500)</span>
+                </div>
+            </div>
+            <div class="stepper-card" id="indicator-step-4">
+                <div class="step-indicator" id="badge-step-4">4</div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block font-mono">Stage 04</span>
+                    <span class="text-xs sm:text-sm font-bold text-white">Approve / Reject Decision</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAGE 1: APPLICANT PROFILE & ACADEMIC PROGRAM -->
+        <div id="step-applicant" class="wizard-step active bg-brand-surface border border-brand-border rounded-xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+            <div class="h-1 bg-gradient-to-r from-brand-cyan via-blue-500 to-indigo-600 absolute top-0 left-0 right-0"></div>
+            <div class="border-b border-brand-border-subtle pb-4 mb-6">
+                <h3 class="text-lg font-bold text-white tracking-tight">Stage 1: Applicant Profile &amp; Academic Program Selection</h3>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                    Enter the applicant's details and select their academic program to initialize their application dossier. If the enrollment is delayed, the applicant will automatically remain in the Admissions Queue with a <strong class="text-brand-cyan">Resume</strong> button.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="applicant-fullname" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Applicant Full Legal Name <span class="text-brand-cyan">*</span>
+                        </label>
+                        <input type="text" id="applicant-fullname" placeholder="e.g., Joseph Lopez" class="w-full bg-brand-darker border border-brand-border rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition">
+                    </div>
+                    <div>
+                        <label for="applicant-email" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Applicant Email Address <span class="text-brand-cyan">*</span>
+                        </label>
+                        <input type="email" id="applicant-email" placeholder="applicant@example.com" class="w-full bg-brand-darker border border-brand-border rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition">
+                    </div>
+                    <div>
+                        <label for="applicant-phone" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Contact Number (Optional)
+                        </label>
+                        <input type="text" id="applicant-phone" placeholder="09123456789" class="w-full bg-brand-darker border border-brand-border rounded-lg px-3.5 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="applicant-program" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Select Academic Program <span class="text-brand-cyan">*</span>
+                        </label>
+                        <select id="applicant-program" class="w-full bg-brand-darker border border-brand-border rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
+                            <option value="BSCS-001">BSCS-001 — B.S. in Computer Science</option>
+                            <option value="BSIT-002">BSIT-002 — B.S. in Information Technology</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="applicant-tuition-plan" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Tuition Settlement Model
+                        </label>
+                        <select id="applicant-tuition-plan" class="w-full bg-brand-darker border border-brand-border rounded-lg px-3.5 py-2.5 text-sm font-mono text-white focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
+                            <option value="split">4-Month Split Plan (₱5,000.00 / month)</option>
+                            <option value="full">Full Semestral (₱20,000.00 upfront)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="button" id="btn-step1-continue" onclick="saveApplicantAndContinue()" class="w-full py-3 px-5 rounded-lg bg-brand-cyan text-brand-black hover:bg-brand-cyan-hover font-bold text-xs uppercase tracking-wider shadow-cyan-sm hover:shadow-cyan-md transition flex items-center justify-center gap-2">
+                        <span>Save Applicant &amp; Proceed to Document Checklist</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="applicant-step-error"></div>
+
+            <!-- Resume Existing Application By Application ID -->
+            <div class="mt-6 pt-5 border-t border-brand-border flex flex-col sm:flex-row items-center gap-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Or Resume Delayed Application by ID:</span>
+                <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
+                    <input type="text" id="resume-app-id-input" placeholder="e.g., APP-388E1F5A" class="flex-1 bg-brand-darker border border-brand-border rounded-lg px-3 py-2 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan">
+                    <button type="button" onclick="resumeFromLookupInput()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-brand-border text-xs font-semibold transition whitespace-nowrap">
+                        Resume Dossier &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAGE 2: PHYSICAL DOCUMENT HAND-IN CHECKLIST (Replaces Upload) -->
+        <div id="step-documents" class="wizard-step bg-brand-surface border border-brand-border rounded-xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+            <div class="h-1 bg-gradient-to-r from-brand-cyan via-blue-500 to-indigo-600 absolute top-0 left-0 right-0"></div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-border-subtle pb-4 mb-5">
+                <div>
+                    <h3 class="text-lg font-bold text-white tracking-tight">Stage 2: Physical Document Hand-In Checklist</h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Check each requirement as the applicant hands in their physical documents in person. Once all 4 items are checked, the applicant can proceed to the enrollment fee payment.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <span class="px-3 py-1 rounded-full bg-brand-darker border border-brand-border text-xs font-mono text-slate-300">
+                        Dossier ID: <strong id="active-app-id" class="text-brand-cyan"></strong>
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-3">
+                <span id="checklist-progress-label" class="text-xs font-mono font-bold text-amber-400">0 of 4 Required Documents Checked</span>
+                <button type="button" onclick="checkAllDocuments()" class="text-xs font-semibold text-brand-cyan hover:underline">
+                    <i class="fa-solid fa-check-double mr-1"></i>Mark All 4 Received
+                </button>
+            </div>
+
+            <!-- 4 Interactive Checklist Cards -->
+            <div class="space-y-3 mb-6">
+                <div class="checklist-item" data-doc="Report Card" onclick="toggleChecklistItem('Report Card')">
+                    <div class="flex items-center gap-3.5">
+                        <div class="checklist-checkbox"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <div class="text-sm font-bold text-white">1. Official Report Card / Form 138 (Original Copy)</div>
+                            <div class="text-xs text-slate-400">Physical scholastic report card or certified transcript handed in to Registrar.</div>
+                        </div>
+                    </div>
+                    <div class="checklist-status-label"><span class="text-slate-500 font-mono text-[11px]">Pending Hand-In</span></div>
+                </div>
+
+                <div class="checklist-item" data-doc="Birth Certificate" onclick="toggleChecklistItem('Birth Certificate')">
+                    <div class="flex items-center gap-3.5">
+                        <div class="checklist-checkbox"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <div class="text-sm font-bold text-white">2. PSA / Official Birth Certificate</div>
+                            <div class="text-xs text-slate-400">Original or certified true copy of PSA Birth Certificate verified in person.</div>
+                        </div>
+                    </div>
+                    <div class="checklist-status-label"><span class="text-slate-500 font-mono text-[11px]">Pending Hand-In</span></div>
+                </div>
+
+                <div class="checklist-item" data-doc="Good Moral Certificate" onclick="toggleChecklistItem('Good Moral Certificate')">
+                    <div class="flex items-center gap-3.5">
+                        <div class="checklist-checkbox"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <div class="text-sm font-bold text-white">3. Certificate of Good Moral Character</div>
+                            <div class="text-xs text-slate-400">Signed and sealed Good Moral Certificate from previous school handed in.</div>
+                        </div>
+                    </div>
+                    <div class="checklist-status-label"><span class="text-slate-500 font-mono text-[11px]">Pending Hand-In</span></div>
+                </div>
+
+                <div class="checklist-item" data-doc="2x2 ID Photos" onclick="toggleChecklistItem('2x2 ID Photos')">
+                    <div class="flex items-center gap-3.5">
+                        <div class="checklist-checkbox"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <div class="text-sm font-bold text-white">4. 2x2 Formal ID Photos (2 Copies, White Background)</div>
+                            <div class="text-xs text-slate-400">Submitted for physical student dossier folder and university ID card.</div>
+                        </div>
+                    </div>
+                    <div class="checklist-status-label"><span class="text-slate-500 font-mono text-[11px]">Pending Hand-In</span></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" onclick="saveChecklistAndPause()" class="w-full py-3 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 font-semibold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-pause text-xs"></i>
+                    <span>Save Incomplete Progress &amp; Delay Application</span>
+                </button>
+                <button type="button" onclick="validateAndProceedToPayment()" class="w-full py-3 px-5 rounded-lg bg-brand-cyan text-brand-black hover:bg-brand-cyan-hover font-bold text-xs uppercase tracking-wider shadow-cyan-sm hover:shadow-cyan-md transition flex items-center justify-center gap-2">
+                    <span>All Documents Checked — Proceed to Payment</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+            <div id="doc-validation-error"></div>
+        </div>
+
+        <!-- STAGE 3: ENROLLMENT FEE PAYMENT -->
+        <div id="step-payment" class="wizard-step bg-brand-surface border border-brand-border rounded-xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+            <div class="h-1 bg-gradient-to-r from-brand-cyan via-emerald-400 to-indigo-600 absolute top-0 left-0 right-0"></div>
+            <div class="border-b border-brand-border-subtle pb-4 mb-5">
+                <h3 class="text-lg font-bold text-white tracking-tight">Stage 3: Enrollment Assessment Fee Payment</h3>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                    All 4 physical documents have been verified. Select the payment channel below to record the ₱500.00 enrollment fee and advance to the final admission decision.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-3">Select Institutional Payment Channel</label>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="payment-card selected" id="card-cash" onclick="selectPaymentCard('cash')">
+                        <div class="payment-check-badge">&#10003;</div>
+                        <div class="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-wave text-brand-cyan"></i>
+                            <span>Cash (Over-the-Counter)</span>
+                        </div>
+                        <div class="text-xs text-slate-400">Direct in-person cash payment at the Registrar / Cashier counter.</div>
+                    </div>
+                    <div class="payment-card" id="card-gcash" onclick="selectPaymentCard('gcash')">
+                        <div class="payment-check-badge">&#10003;</div>
+                        <div class="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-wallet text-brand-cyan"></i>
+                            <span>GCash e-Wallet</span>
+                        </div>
+                        <div class="text-xs text-slate-400">Instant digital remittance with real-time reference receipt.</div>
+                    </div>
+                    <div class="payment-card" id="card-debit_card" onclick="selectPaymentCard('debit_card')">
+                        <div class="payment-check-badge">&#10003;</div>
+                        <div class="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-building-columns text-brand-cyan"></i>
+                            <span>Direct Debit Card</span>
+                        </div>
+                        <div class="text-xs text-slate-400">Immediate settlement from linked bank account.</div>
+                    </div>
+                    <div class="payment-card" id="card-credit_card" onclick="selectPaymentCard('credit_card')">
+                        <div class="payment-check-badge">&#10003;</div>
+                        <div class="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                            <i class="fa-regular fa-credit-card text-brand-cyan"></i>
+                            <span>Credit Card</span>
+                        </div>
+                        <div class="text-xs text-slate-400">Visa / Mastercard institutional tuition &amp; fee processing.</div>
+                    </div>
+                </div>
+
+                <select id="pay-method" class="hidden-select" onchange="selectPaymentCard(this.value)">
+                    <option value="cash">Cash</option>
+                    <option value="gcash">GCash</option>
+                    <option value="debit_card">Debit Card</option>
+                    <option value="credit_card">Credit Card</option>
+                </select>
+
+                <!-- Assessment Fee Summary Box -->
+                <div class="bg-brand-darker border border-brand-border rounded-xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <label for="pay-amount" class="block text-xs font-bold text-white uppercase tracking-wider">Admissions Enrollment Fee (PHP)</label>
+                        <span class="text-xs text-slate-400">Non-refundable enrollment assessment fee • Unlocks Final Admission Decision</span>
+                    </div>
+                    <input type="text" id="pay-amount" value="500.00" readonly class="w-36 text-right font-mono font-extrabold text-lg text-brand-cyan bg-brand-surface border border-brand-border rounded-lg px-3 py-2">
+                </div>
+
+                <button type="button" onclick="submitPayment()" class="w-full py-3 px-5 rounded-lg bg-brand-cyan text-brand-black hover:bg-brand-cyan-hover font-bold text-xs uppercase tracking-wider shadow-cyan-sm hover:shadow-cyan-md transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-xs"></i>
+                    <span>Confirm ₱500.00 Enrollment Fee Payment &amp; Proceed to Decision &rarr;</span>
+                </button>
+                <div id="payment-result"></div>
+            </div>
+        </div>
+
+        <!-- STAGE 4: FINAL ADMISSION DECISION (APPROVE OR REJECT APPLICANT) -->
+        <div id="step-decision" class="wizard-step bg-brand-surface border border-brand-border rounded-xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
+            <div class="h-1 bg-gradient-to-r from-emerald-400 via-brand-cyan to-blue-600 absolute top-0 left-0 right-0"></div>
+            <div class="border-b border-brand-border-subtle pb-4 mb-5">
+                <h3 class="text-lg font-bold text-white tracking-tight">Stage 4: Final Admission Decision (Approve or Reject Applicant)</h3>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                    The applicant has handed in all required physical documents and paid the ₱500.00 enrollment fee. Issue the official admission decision below.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs mb-6">
+                <div class="bg-brand-darker border border-brand-border rounded-xl p-4">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Applicant Name</span>
+                    <div id="summary-applicant-name" class="text-sm font-bold text-white mt-1">-</div>
+                    <span id="summary-user-id" class="text-[11px] text-brand-cyan font-mono">-</span>
+                </div>
+                <div class="bg-brand-darker border border-brand-border rounded-xl p-4">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Application ID &amp; Program</span>
+                    <div id="summary-app-id" class="text-sm font-bold text-white font-mono mt-1">-</div>
+                    <span id="summary-course-id" class="text-[11px] text-slate-300 font-mono">-</span>
+                </div>
+                <div class="bg-brand-darker border border-emerald-500/30 rounded-xl p-4">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Checklist &amp; Fee Clearance</span>
+                    <div id="summary-payment-ref" class="text-sm font-bold text-emerald-400 font-mono mt-1">₱500.00 PAID ✓</div>
+                    <span class="text-[11px] text-slate-300 font-mono">4/4 Physical Docs Verified ✓</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button type="button" id="btn-final-reject" onclick="finalizeApplicationDecision('rejected')" class="w-full py-3.5 px-5 rounded-xl bg-rose-600/15 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/40 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-xmark text-sm"></i>
+                    <span>Reject Applicant</span>
+                </button>
+                <button type="button" id="btn-final-approve" onclick="finalizeApplicationDecision('approved')" class="w-full py-3.5 px-5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-brand-black font-extrabold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-check text-sm"></i>
+                    <span>Approve Applicant</span>
+                </button>
+            </div>
+
+            <div id="decision-result"></div>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 text-center text-xs text-slate-500 border-t border-brand-border/40 pt-6">
+        <p>Admissions &amp; Academic Review Board • University Enrollment &amp; Student Information System (v4.2.0)</p>
+    </footer>
+
+</body>
+
+</html>

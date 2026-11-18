@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Registrar Portal — Admissions &amp; Enrollment Gate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../shared/js/api.js"></script>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/admin.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+    <!-- OFFICER AUTHENTICATION GATE (Shown before login) -->
+    <div id="auth-gate-view" class="min-h-screen w-full flex flex-col justify-between bg-surface">
+        <header class="h-16 w-full px-gutter-lg bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/20 flex items-center justify-between">
+            <div class="flex items-center gap-space-md">
+                <div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary-container font-headline-sm flex items-center justify-center font-bold shadow-[0_0_12px_rgba(0,242,254,0.3)]">
+                    IT
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-headline-sm text-headline-sm text-tertiary tracking-tight">INSTITUTE OF TECHNOLOGY</span>
+                    <span class="font-label-caps text-label-caps text-secondary uppercase">Registrar Portal</span>
+                </div>
+            </div>
+            <a href="../student-portal/index.html" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary font-label-code text-label-code flex items-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[16px] text-secondary">arrow_back</span>
+                <span>Back to Student Portal</span>
+            </a>
+            <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="ml-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                <span data-theme-label>Light Mode</span>
+            </button>
+        </header>
+
+        <div class="max-w-md w-full mx-auto px-4 my-12">
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-2xl border border-outline-variant/25 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-primary-container"></div>
+                <div class="flex items-center gap-space-sm mb-2">
+                    <div class="w-10 h-10 rounded-lg bg-surface-container-high text-primary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">admin_panel_settings</span>
+                    </div>
+                    <div>
+                        <span class="font-label-caps text-label-caps text-secondary uppercase block">Security Terminal</span>
+                        <h1 class="font-headline-md text-headline-md text-tertiary">Officer Authentication</h1>
+                    </div>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+                    Authorized admissions &amp; registrar staff only. Sign in to access the walk-in enrollment gate, account provisioning, and tuition ledger.
+                </p>
+
+                <div class="space-y-space-md">
+                    <div>
+                        <label for="admin-id-input" class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1.5">Admin User ID</label>
+                        <input type="text" id="admin-id-input" placeholder="e.g., ADMIN-001" class="w-full bg-surface-container text-tertiary font-label-code text-label-code px-3.5 py-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                    </div>
+                    <div>
+                        <label for="admin-password-input" class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1.5">Password</label>
+                        <input type="password" id="admin-password-input" placeholder="Enter password" class="w-full bg-surface-container text-tertiary font-body-sm text-body-sm px-3.5 py-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                    </div>
+                    <button type="button" onclick="verifyAdminAccess()" class="w-full py-3 px-space-md rounded-lg bg-primary-container hover:bg-secondary text-on-primary font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                        <span class="material-symbols-outlined text-[18px]">lock_open</span>
+                        <span>Sign In to Registrar Terminal</span>
+                    </button>
+                </div>
+                <div id="auth-error"></div>
+            </div>
+        </div>
+
+        <footer class="py-4 text-center font-label-code text-label-code text-outline">
+            INSTITUTE OF TECHNOLOGY • REGISTRAR COMMAND TERMINAL v4.8
+        </footer>
+    </div>
+
+    <!-- PROTECTED REGISTRAR TERMINAL SHELL -->
+    <div id="admin-shell">
+        <!-- Fixed Top Header -->
+        <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
+            <div class="h-16 w-full px-gutter-lg flex items-center justify-between gap-space-md">
+                <div class="flex items-center gap-space-md">
+                    <div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary-container font-headline-sm flex items-center justify-center font-bold shadow-[0_0_12px_rgba(0,242,254,0.3)]">
+                        IT
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-headline-sm text-headline-sm text-tertiary tracking-tight">INSTITUTE OF TECHNOLOGY</span>
+                        <span class="font-label-caps text-label-caps text-secondary uppercase">Registrar Portal</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-space-md">
+                    <div class="hidden xl:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded-full border border-outline-variant/30">
+                        <span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+                        <span class="font-label-code text-label-code text-on-surface-variant">AY 2026-2027 • 1st Sem</span>
+                    </div>
+                    <div class="hidden lg:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded-full border border-outline-variant/30">
+                        <span class="material-symbols-outlined text-[16px] text-secondary">badge</span>
+                        <span id="header-admin-badge" class="font-label-code text-label-code text-on-surface">Admin Registrar #ADMIN-001</span>
+                    </div>
+                    <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                        <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                        <span data-theme-label>Light Mode</span>
+                    </button>
+                    <button type="button" onclick="logoutAdmin()" class="px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary font-label-code text-label-code flex items-center gap-1.5 transition-all">
+                        <span class="material-symbols-outlined text-[16px] text-error">logout</span>
+                        <span>Log Out</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Fixed Left Sidebar -->
+        <aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-lowest/95 backdrop-blur-xl z-40 flex flex-col py-space-md shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
+            <div class="px-space-md mb-space-sm">
+                <span class="font-label-caps text-label-caps text-on-surface-variant/70 uppercase tracking-widest">Core Registry Workflows</span>
+            </div>
+            <nav class="flex-1 px-space-sm flex flex-col gap-1">
+                <a aria-current="page" class="flex items-center px-space-sm py-2 transition-all bg-primary-container text-on-primary-container font-semibold rounded-lg font-body-sm text-body-sm" href="admin.html">
+                    <span class="material-symbols-outlined mr-space-sm text-[20px]">how_to_reg</span>Admissions &amp; Enrollment
+                </a>
+                <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" href="courses.html">
+                    <span class="material-symbols-outlined mr-space-sm text-[20px]">menu_book</span>Courses &amp; Curriculum
+                </a>
+                <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" href="grades.html">
+                    <span class="material-symbols-outlined mr-space-sm text-[20px]">edit_note</span>Grade Encoding
+                </a>
+                <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" href="create-account.html">
+                    <span class="material-symbols-outlined mr-space-sm text-[20px]">manage_accounts</span>Account Provisioning
+                </a>
+                <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-body-sm text-body-sm" href="tuition.html">
+                    <span class="material-symbols-outlined mr-space-sm text-[20px]">account_balance_wallet</span>Tuition &amp; Ledger
+                </a>
+            </nav>
+            <div class="px-space-md pt-space-sm mt-auto">
+                <div class="bg-surface-container-low p-space-sm rounded-lg flex items-center justify-between">
+                    <div class="flex flex-col">
+                        <span class="font-label-caps text-label-caps text-on-surface-variant">Core Gateway</span>
+                        <span class="font-label-code text-label-code text-secondary">OPERATIONAL</span>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Workspace -->
+        <div class="pl-64">
+            <main class="relative pt-16 w-full bg-surface min-h-screen">
+                <div class="flex flex-col w-full">
+
+                    <!-- Dynamic Operational Notice / Metric Ribbon -->
+                    <div class="px-margin lg:px-margin-lg py-space-sm bg-surface-container-lowest/80 backdrop-blur-md flex flex-wrap items-center justify-between gap-space-md">
+                        <div class="flex items-center gap-space-md">
+                            <div class="flex items-center gap-space-xs">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,242,254,0.6)] animate-pulse"></span>
+                                <span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase">In-Person Intake Active</span>
+                            </div>
+                            <div class="h-3 w-px bg-surface-variant"></div>
+                            <span class="font-label-code text-label-code text-on-surface-variant">Desk Terminal: <strong class="text-tertiary">REG-DESK-04 (Main Quadrangle Wing)</strong></span>
+                        </div>
+                        <div class="flex items-center gap-space-lg">
+                            <div class="flex items-center gap-space-xs font-label-code text-label-code text-on-surface-variant">
+                                <span>Total Queue:</span>
+                                <span id="ribbon-verified-count" class="text-primary font-semibold">0 Dossiers</span>
+                            </div>
+                            <div class="flex items-center gap-space-xs font-label-code text-label-code text-on-surface-variant">
+                                <span>Cashier Sync:</span>
+                                <span class="text-secondary font-semibold">Online (Gateway OR# Auto-Lock)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-margin lg:p-margin-lg space-y-space-xl">
+
+                        <!-- Top Step Pipeline Indicator -->
+                        <div class="bg-surface-container-low p-space-md lg:p-space-lg rounded-xl shadow-lg relative overflow-hidden">
+                            <div class="absolute -right-16 -top-16 w-64 h-64 bg-primary-container/5 rounded-full blur-3xl pointer-events-none"></div>
+                            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md mb-space-lg">
+                                <div>
+                                    <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block mb-0.5">On-Site Admissions Protocol</span>
+                                    <h1 class="font-headline-lg text-headline-lg text-tertiary tracking-tight">Walk-In Candidate Verification &amp; Enrollment Gate</h1>
+                                </div>
+                                <div class="flex items-center gap-space-sm">
+                                    <span class="font-label-code text-label-code bg-surface-container px-3 py-1.5 rounded text-on-surface-variant">
+                                        Active Session: <span class="text-primary" id="active-session-id">-</span>
+                                    </span>
+                                    <button class="px-3.5 py-1.5 rounded bg-primary-container hover:bg-secondary text-on-primary-container text-label-code font-label-code font-bold transition-all flex items-center gap-1 shadow-[0_0_12px_rgba(0,242,254,0.3)]" onclick="resetIntakeConsole()" type="button">
+                                        <span class="material-symbols-outlined text-[16px]">person_add</span> + New Walk-In Candidate
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Stepper Progress Nodes -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-space-md relative">
+                                <!-- Step 1 -->
+                                <div class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container/60">
+                                    <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(0,242,254,0.3)]">
+                                        <span class="material-symbols-outlined text-[18px]">done</span>
+                                    </div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-label-caps text-label-caps text-primary uppercase">Stage 01</span>
+                                        <span class="font-headline-sm text-headline-sm text-tertiary truncate">Candidate Intake</span>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Program &amp; Biometrics Set</span>
+                                    </div>
+                                </div>
+                                <!-- Step 2 -->
+                                <div class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container shadow-md" id="step-node-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center shrink-0 ring-4 ring-primary-container/20" id="step-badge-2">
+                                        2
+                                    </div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-label-caps text-label-caps text-secondary uppercase">Stage 02 • Active</span>
+                                        <span class="font-headline-sm text-headline-sm text-tertiary truncate">Physical Verification</span>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant truncate" id="step-subtext-2">0/4 Documents Handed</span>
+                                    </div>
+                                </div>
+                                <!-- Step 3 -->
+                                <div class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container/40 opacity-70" id="step-node-3">
+                                    <div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shrink-0" id="step-badge-3">
+                                        3
+                                    </div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase">Stage 03</span>
+                                        <span class="font-headline-sm text-headline-sm text-on-surface-variant truncate">Fee Settlement</span>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant truncate" id="step-subtext-3">₱500.00 In-Person</span>
+                                    </div>
+                                </div>
+                                <!-- Step 4 -->
+                                <div class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container/40 opacity-70" id="step-node-4">
+                                    <div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center shrink-0" id="step-badge-4">
+                                        4
+                                    </div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-label-caps text-label-caps text-outline uppercase">Stage 04</span>
+                                        <span class="font-headline-sm text-headline-sm text-on-surface-variant truncate">Registrar Decision</span>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant truncate" id="step-subtext-4">Approval / Matrix Lock</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Intake Console: Two Column Asymmetric Command Setup -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+                            <!-- Left Panel: Applicant Record & Document Checklist (7 Cols) -->
+                            <div class="lg:col-span-7 bg-surface-container-low rounded-xl p-space-md lg:p-space-lg flex flex-col justify-between shadow-xl">
+                                <div class="space-y-space-md">
+                                    <!-- Header of left panel -->
+                                    <div class="flex items-center justify-between pb-space-sm bg-surface-container-lowest/50 p-space-sm rounded-lg">
+                                        <div class="flex items-center gap-space-sm">
+                                            <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-secondary">
+                                                <span class="material-symbols-outlined text-[24px]">assignment_ind</span>
+                                            </div>
+                                            <div>
+                                                <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Candidate Record</span>
+                                                <h2 class="font-headline-md text-headline-md text-tertiary" id="console-applicant-name">Loading Candidate...</h2>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="font-label-code text-label-code bg-surface-container-highest text-secondary px-2.5 py-1 rounded inline-block" id="console-applicant-id">USER-0000</span>
+                                            <span class="block font-label-caps text-label-caps text-outline mt-0.5">AY 2026-2027 • 1st Sem</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Metadata Grid -->
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-space-sm text-body-sm font-body-sm bg-surface-container p-space-sm rounded-lg">
+                                        <div>
+                                            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Target Degree Program</span>
+                                            <span class="text-tertiary font-medium" id="console-program">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Verified Contact</span>
+                                            <span class="font-label-code text-label-code text-on-surface" id="console-phone">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Campus Email</span>
+                                            <span class="font-label-code text-label-code text-on-surface truncate block" id="console-email">-</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Physical Document Checklist Section -->
+                                    <div class="space-y-space-sm pt-space-xs">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h3 class="font-headline-sm text-headline-sm text-tertiary">Physical Hand-Delivered Documents</h3>
+                                                <p class="font-body-sm text-body-sm text-on-surface-variant">Examine physically submitted paperwork. Tick off to confirm authenticity.</p>
+                                            </div>
+                                            <span class="font-label-code text-label-code bg-surface-container-highest text-secondary px-2.5 py-1 rounded font-bold" id="doc-counter-badge">
+                                                0 / 4 VERIFIED
+                                            </span>
+                                        </div>
+
+                                        <!-- Documents List Container -->
+                                        <div class="space-y-2">
+                                            <!-- Item 1 -->
+                                            <label class="flex items-center justify-between p-space-sm bg-surface-container hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+                                                <div class="flex items-center gap-space-sm">
+                                                    <input class="w-5 h-5 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="doc-psa" onchange="updateDocState()" type="checkbox">
+                                                    <div>
+                                                        <span class="font-body-md text-body-md text-tertiary font-medium block">PSA Birth Certificate</span>
+                                                        <span class="font-body-sm text-body-sm text-on-surface-variant">Original verified with dry seal + 2 crisp photocopies</span>
+                                                    </div>
+                                                </div>
+                                                <span class="font-label-code text-label-code text-error flex items-center gap-1 bg-error-container/20 px-2 py-0.5 rounded" id="doc-psa-status">
+                                                    <span class="material-symbols-outlined text-[16px]">pending</span> Pending Hand-in
+                                                </span>
+                                            </label>
+
+                                            <!-- Item 2 -->
+                                            <label class="flex items-center justify-between p-space-sm bg-surface-container hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+                                                <div class="flex items-center gap-space-sm">
+                                                    <input class="w-5 h-5 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="doc-f138" onchange="updateDocState()" type="checkbox">
+                                                    <div>
+                                                        <span class="font-body-md text-body-md text-tertiary font-medium block">Form 138 / SHS Report Card</span>
+                                                        <span class="font-body-sm text-body-sm text-on-surface-variant">Principal signed with STEM strand seal (GWA &gt;= 88.50)</span>
+                                                    </div>
+                                                </div>
+                                                <span class="font-label-code text-label-code text-error flex items-center gap-1 bg-error-container/20 px-2 py-0.5 rounded" id="doc-f138-status">
+                                                    <span class="material-symbols-outlined text-[16px]">pending</span> Pending Hand-in
+                                                </span>
+                                            </label>
+
+                                            <!-- Item 3 -->
+                                            <label class="flex items-center justify-between p-space-sm bg-surface-container hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+                                                <div class="flex items-center gap-space-sm">
+                                                    <input class="w-5 h-5 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="doc-moral" onchange="updateDocState()" type="checkbox">
+                                                    <div>
+                                                        <span class="font-body-md text-body-md text-tertiary font-medium block">Certificate of Good Moral Character</span>
+                                                        <span class="font-body-sm text-body-sm text-on-surface-variant">Issued by High School Guidance Counselor within 90 days</span>
+                                                    </div>
+                                                </div>
+                                                <span class="font-label-code text-label-code text-error flex items-center gap-1 bg-error-container/20 px-2 py-0.5 rounded" id="doc-moral-status">
+                                                    <span class="material-symbols-outlined text-[16px]">pending</span> Pending Hand-in
+                                                </span>
+                                            </label>
+
+                                            <!-- Item 4 -->
+                                            <label class="flex items-center justify-between p-space-sm bg-surface-container hover:bg-surface-container-high transition-colors rounded-lg cursor-pointer">
+                                                <div class="flex items-center gap-space-sm">
+                                                    <input class="w-5 h-5 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="doc-photo" onchange="updateDocState()" type="checkbox">
+                                                    <div>
+                                                        <span class="font-body-md text-body-md text-tertiary font-medium block">2x2 Official ID Photographs</span>
+                                                        <span class="font-body-sm text-body-sm text-on-surface-variant">4 copies, studio white background with printed nameplate</span>
+                                                    </div>
+                                                </div>
+                                                <span class="font-label-code text-label-code text-error flex items-center gap-1 bg-error-container/20 px-2 py-0.5 rounded" id="doc-photo-status">
+                                                    <span class="material-symbols-outlined text-[16px]">pending</span> Pending Hand-in
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Warning Strip -->
+                                <div class="mt-space-md p-space-sm rounded-lg bg-surface-container-highest/60 flex items-center gap-space-sm" id="checklist-warning-box">
+                                    <span class="material-symbols-outlined text-secondary text-[22px] shrink-0">info</span>
+                                    <span class="font-body-sm text-body-sm text-on-surface-variant">
+                                        Registrar Policy: All 4 physical documents must be inspected and validated before enrollment fee settlement can be registered.
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Right Panel: Fee Settlement & Final Decision Action Panel (5 Cols) -->
+                            <div class="lg:col-span-5 flex flex-col gap-space-md">
+                                <!-- Fee Settlement Card -->
+                                <div class="bg-surface-container-low rounded-xl p-space-md lg:p-space-lg shadow-xl">
+                                    <div class="flex items-center justify-between mb-space-sm">
+                                        <div>
+                                            <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block">Stage 03 Settlement</span>
+                                            <h3 class="font-headline-md text-headline-md text-tertiary">Enrollment Fee Ledger</h3>
+                                        </div>
+                                        <span class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+                                            <span class="material-symbols-outlined text-[20px]">payments</span>
+                                        </span>
+                                    </div>
+                                    <div class="p-space-sm bg-surface-container-lowest rounded-lg mb-space-md">
+                                        <div class="flex items-baseline justify-between mb-1">
+                                            <span class="font-body-sm text-body-sm text-on-surface-variant">Standard Walk-In Metric</span>
+                                            <span class="font-metric-num text-metric-num text-primary">₱500.00</span>
+                                        </div>
+                                        <div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+                                            <span>Assessment Breakdown:</span>
+                                            <span class="font-label-code text-label-code text-tertiary">ID Card (₱250) + Handbook (₱250)</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-space-sm">
+                                        <div>
+                                            <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Payment Channel &amp; Receipt Reference</label>
+                                            <div class="flex items-center gap-2">
+                                                <select id="fee-method-select" class="bg-surface-container-lowest text-tertiary font-label-code text-label-code p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                                                    <option value="cash">Cash (Over-the-Counter)</option>
+                                                    <option value="gcash">GCash</option>
+                                                    <option value="debit_card">Debit Card</option>
+                                                    <option value="credit_card">Credit Card</option>
+                                                </select>
+                                                <input class="w-full bg-surface-container-lowest text-tertiary font-label-code text-label-code p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container" id="or-number-input" placeholder="Auto-generated OR# upon toggle" type="text" readonly>
+                                            </div>
+                                        </div>
+                                        <!-- Fee Toggle Status -->
+                                        <div class="flex items-center justify-between p-space-sm bg-surface-container rounded-lg">
+                                            <div class="flex flex-col">
+                                                <span class="font-headline-sm text-headline-sm text-tertiary">Fee Payment Status</span>
+                                                <span class="font-body-sm text-body-sm text-on-surface-variant" id="fee-status-description">Awaiting Official Cashier / Terminal OR</span>
+                                            </div>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input class="sr-only peer" id="fee-paid-toggle" onchange="toggleFeeState()" type="checkbox">
+                                                <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-surface peer-checked:bg-primary-container after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-primary-container after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Decision Action Panel -->
+                                <div class="bg-surface-container-low rounded-xl p-space-md lg:p-space-lg shadow-xl flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-space-sm">
+                                            <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block">Stage 04 Final Action</span>
+                                            <span class="font-label-code text-label-code text-secondary flex items-center gap-1" id="action-lock-status">
+                                                <span class="material-symbols-outlined text-[16px]">lock</span> Prerequisites Required
+                                            </span>
+                                        </div>
+                                        <h3 class="font-headline-md text-headline-md text-tertiary mb-space-xs">Registrar Dossier Decision</h3>
+                                        <p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+                                            Approving registers the matriculation slot and unlocks student credential provisioning in the identity core.
+                                        </p>
+                                    </div>
+                                    <div class="space-y-space-sm">
+                                        <!-- Approve Button -->
+                                        <button class="w-full py-3 px-space-md rounded-lg bg-primary-container hover:bg-secondary text-on-primary font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-space-sm transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)]" id="btn-approve" onclick="handleDecision('approve')" type="button">
+                                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                            Approve Applicant &amp; Enroll
+                                        </button>
+                                        <!-- Secondary Actions Grid -->
+                                        <div class="grid grid-cols-2 gap-space-sm">
+                                            <button class="py-2.5 px-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high text-tertiary font-body-md text-body-md font-medium flex items-center justify-center gap-1 transition-all" id="btn-suspend" onclick="handleDecision('suspend')" type="button">
+                                                <span class="material-symbols-outlined text-[18px] text-on-surface-variant">pause_circle</span>
+                                                Save &amp; Suspend
+                                            </button>
+                                            <button class="py-2.5 px-space-sm rounded-lg bg-error-container/20 hover:bg-error-container/40 text-error font-body-md text-body-md font-medium flex items-center justify-center gap-1 transition-all" id="btn-reject" onclick="handleDecision('reject')" type="button">
+                                                <span class="material-symbols-outlined text-[18px]">cancel</span>
+                                                Reject Application
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Applicants & Dossiers Master Queue -->
+                        <div class="bg-surface-container-low rounded-xl p-space-md lg:p-space-lg shadow-xl space-y-space-md">
+                            <!-- Table Header & Controls -->
+                            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+                                <div>
+                                    <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest block">In-Person Audit Queue</span>
+                                    <h2 class="font-headline-lg text-headline-lg text-tertiary">Applicants &amp; Dossiers Master Registry</h2>
+                                </div>
+                                <!-- Search and Filter Pills -->
+                                <div class="flex flex-wrap items-center gap-space-sm">
+                                    <!-- Live Search Bar -->
+                                    <div class="relative w-full sm:w-80">
+                                        <span class="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 text-[18px]">search</span>
+                                        <input class="w-full bg-surface-container-lowest text-tertiary text-body-sm font-body-sm pl-9 pr-8 py-2 rounded focus:outline-none focus:ring-1 focus:ring-primary-container" id="queue-search" oninput="filterApplicantsTable()" placeholder="Search name, App ID, or User ID..." type="text">
+                                        <span class="font-label-code text-label-code text-outline-variant absolute right-2.5 top-1/2 -translate-y-1/2">⌘K</span>
+                                    </div>
+                                    <!-- Status Filter Tabs -->
+                                    <div class="flex items-center bg-surface-container p-1 rounded-lg">
+                                        <button class="filter-tab-btn px-2.5 py-1 text-label-caps font-label-caps rounded text-primary bg-surface-container-high" onclick="setFilter('ALL', this)" type="button">ALL</button>
+                                        <button class="filter-tab-btn px-2.5 py-1 text-label-caps font-label-caps rounded text-on-surface-variant hover:text-tertiary" onclick="setFilter('PENDING_DOCS', this)" type="button">DOCS PENDING</button>
+                                        <button class="filter-tab-btn px-2.5 py-1 text-label-caps font-label-caps rounded text-on-surface-variant hover:text-tertiary" onclick="setFilter('READY', this)" type="button">READY</button>
+                                        <button class="filter-tab-btn px-2.5 py-1 text-label-caps font-label-caps rounded text-on-surface-variant hover:text-tertiary" onclick="setFilter('APPROVED', this)" type="button">APPROVED</button>
+                                        <button class="filter-tab-btn px-2.5 py-1 text-label-caps font-label-caps rounded text-on-surface-variant hover:text-tertiary" onclick="setFilter('REJECTED', this)" type="button">REJECTED</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dossier Queue Table -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps tracking-wider uppercase">
+                                            <th class="py-3 px-4 rounded-l">App ID &amp; Timestamp</th>
+                                            <th class="py-3 px-4">Candidate &amp; Identity</th>
+                                            <th class="py-3 px-4">Program Applied</th>
+                                            <th class="py-3 px-4">Physical Documents</th>
+                                            <th class="py-3 px-4">Fee Ledger</th>
+                                            <th class="py-3 px-4">Application Status</th>
+                                            <th class="py-3 px-4 text-right rounded-r">Action Gate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="font-body-sm text-body-sm text-tertiary divide-y-0" id="queue-table-body"></tbody>
+                                </table>
+                            </div>
+
+                            <!-- Dossier Queue Footer Statistics -->
+                            <div class="pt-space-sm flex flex-col sm:flex-row items-center justify-between gap-space-sm font-label-code text-label-code text-on-surface-variant">
+                                <span id="queue-footer-count">Showing 0 walk-in candidates in active desk queue</span>
+                                <div class="flex items-center gap-space-md">
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary-container"></span> <span id="stat-ready-count">Ready for Lock: 0</span></span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-outline"></span> <span id="stat-pending-count">Pending Documents: 0</span></span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary-container"></span> <span id="stat-approved-count">Fully Matriculated: 0</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- NEW WALK-IN CANDIDATE MODAL -->
+        <div id="walkin-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target === this) toggleWalkInModal(false)">
+            <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl max-w-lg w-full p-space-lg shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-primary-container"></div>
+                <div class="flex items-center justify-between mb-space-md">
+                    <div>
+                        <span class="font-label-caps text-label-caps text-secondary uppercase block">Stage 01 Intake</span>
+                        <h3 class="font-headline-md text-headline-md text-tertiary">Register Walk-In Candidate</h3>
+                    </div>
+                    <button type="button" onclick="toggleWalkInModal(false)" class="text-on-surface-variant hover:text-tertiary">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="space-y-space-md">
+                    <div>
+                        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Full Legal Name *</label>
+                        <input type="text" id="walkin-name" placeholder="e.g., Carlos Santiago Jr." class="w-full bg-surface-container text-tertiary font-body-sm text-body-sm p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+                        <div>
+                            <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Campus / Personal Email *</label>
+                            <input type="email" id="walkin-email" placeholder="student@student.it.edu.ph" class="w-full bg-surface-container text-tertiary font-label-code text-label-code p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                        </div>
+                        <div>
+                            <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Contact Number</label>
+                            <input type="text" id="walkin-phone" placeholder="+63 917 554 9821" class="w-full bg-surface-container text-tertiary font-label-code text-label-code p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-1">Target Degree Program *</label>
+                        <select id="walkin-program" class="w-full bg-surface-container text-tertiary font-body-sm text-body-sm p-2.5 rounded focus:outline-none focus:ring-1 focus:ring-primary-container">
+                            <option value="BSCS-001">B.S. in Computer Science (BSCS-001)</option>
+                            <option value="BSIT-002">B.S. in Information Technology (BSIT-002)</option>
+                        </select>
+                    </div>
+                    <div id="walkin-error"></div>
+                    <div class="flex justify-end gap-space-sm pt-space-xs">
+                        <button type="button" onclick="toggleWalkInModal(false)" class="px-4 py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-code text-label-code">
+                            Cancel
+                        </button>
+                        <button type="button" onclick="submitNewWalkInApplicant()" class="px-5 py-2 rounded bg-primary-container hover:bg-secondary text-on-primary-container font-label-code text-label-code font-bold shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+                            Initialize Walk-In Dossier &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

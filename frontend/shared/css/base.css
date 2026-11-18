@@ -1,0 +1,290 @@
+/* Shared Design System — Obsidian Monochrome (Grey Canvas, Black Cards/Dashboard, White Accents + Light Mode) */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root,
+html.dark {
+    color-scheme: dark;
+    /* Dominant Grey Workspace Canvas + Black Dashboard & Cards + White Accents/Text */
+    --surface: #22252d;
+    --surface-dim: #1b1e25;
+    --surface-bright: #2a2e38;
+    --surface-container-lowest: #090a0d;
+    --surface-container-low: #0e1015;
+    --surface-container: #14171e;
+    --surface-container-high: #1a1d26;
+    --surface-container-highest: #262a34;
+    --on-surface: #f4f4f5;
+    --on-surface-variant: #a1a1aa;
+    --outline: #71717a;
+    --outline-variant: #2e323d;
+    --primary: #ffffff;
+    --on-primary: #090a0d;
+    --primary-container: #ffffff;
+    --on-primary-container: #090a0d;
+    --primary-fixed: #f4f4f5;
+    --primary-fixed-dim: #d4d4d8;
+    --secondary: #e4e4e7;
+    --on-secondary: #090a0d;
+    --secondary-container: #272a34;
+    --on-secondary-container: #f4f4f5;
+    --secondary-fixed: #ffffff;
+    --secondary-fixed-dim: #d4d4d8;
+    --tertiary: #ffffff;
+    --on-tertiary: #090a0d;
+    --tertiary-fixed: #ffffff;
+    --tertiary-fixed-dim: #d4d4d8;
+    --error: #f87171;
+    --error-container: #7f1d1d;
+    --on-error-container: #fee2e2;
+    --card-border: #272a34;
+    --input-bg: #111319;
+    --hover-bg: #1f232c;
+}
+
+html:not(.dark),
+html.light {
+    color-scheme: light;
+    /* Light Mode: Soft Grey Canvas + White/Crisp Cards + Charcoal/Black Accents & Text */
+    --surface: #e5e7eb;
+    --surface-dim: #d1d5db;
+    --surface-bright: #f9fafb;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #ffffff;
+    --surface-container: #f3f4f6;
+    --surface-container-high: #e5e7eb;
+    --surface-container-highest: #d1d5db;
+    --on-surface: #090a0d;
+    --on-surface-variant: #4b5563;
+    --outline: #6b7280;
+    --outline-variant: #d1d5db;
+    --primary: #090a0d;
+    --on-primary: #ffffff;
+    --primary-container: #090a0d;
+    --on-primary-container: #ffffff;
+    --primary-fixed: #181a20;
+    --primary-fixed-dim: #374151;
+    --secondary: #1f2937;
+    --on-secondary: #ffffff;
+    --secondary-container: #e5e7eb;
+    --on-secondary-container: #090a0d;
+    --secondary-fixed: #111827;
+    --secondary-fixed-dim: #374151;
+    --tertiary: #090a0d;
+    --on-tertiary: #ffffff;
+    --tertiary-fixed: #090a0d;
+    --tertiary-fixed-dim: #4b5563;
+    --error: #dc2626;
+    --error-container: #fee2e2;
+    --on-error-container: #7f1d1d;
+    --card-border: #d1d5db;
+    --input-bg: #f9fafb;
+    --hover-bg: #e5e7eb;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--surface) !important;
+    color: var(--on-surface) !important;
+    font-family: 'Hanken Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Enforce Dominant Grey Background + Black Dashboard/Cards + White Accents/Text in Dark Mode & Inverted Light Mode */
+main,
+.bg-surface,
+.bg-background {
+    background-color: var(--surface) !important;
+    color: var(--on-surface) !important;
+}
+
+aside,
+header,
+.bg-surface-container-lowest,
+.bg-surface-container-low,
+.bg-surface-container-lowest\/90,
+.bg-surface-container-lowest\/95,
+.bg-surface-container-lowest\/80,
+.bg-surface\/80 {
+    background-color: var(--surface-container-low) !important;
+    border-color: var(--card-border) !important;
+}
+
+header {
+    border-bottom: 1px solid var(--card-border) !important;
+}
+
+aside {
+    border-right: 1px solid var(--card-border) !important;
+}
+
+.bg-surface-container {
+    background-color: var(--surface-container) !important;
+    border-color: var(--card-border) !important;
+}
+
+.bg-surface-container-high,
+.bg-surface-container-highest {
+    background-color: var(--surface-container-high) !important;
+    border-color: var(--card-border) !important;
+}
+
+.bg-primary,
+.bg-primary-container {
+    background-color: var(--primary) !important;
+    color: var(--on-primary) !important;
+    box-shadow: none !important;
+}
+
+.bg-primary:hover,
+.bg-primary-container:hover {
+    opacity: 0.92;
+}
+
+.text-on-primary,
+.text-on-primary-container {
+    color: var(--on-primary) !important;
+}
+
+.text-primary,
+.text-tertiary,
+h1, h2, h3, h4 {
+    color: var(--primary) !important;
+}
+
+.text-secondary,
+.text-secondary-fixed-dim,
+.text-primary-fixed-dim {
+    color: var(--secondary-fixed-dim) !important;
+}
+
+.text-on-surface {
+    color: var(--on-surface) !important;
+}
+
+.text-on-surface-variant,
+.text-outline {
+    color: var(--on-surface-variant) !important;
+}
+
+/* Monochrome Accent Chips / Badges */
+.bg-primary\/10,
+.bg-primary-container\/10,
+.bg-primary-container\/15,
+.bg-primary-container\/20,
+.bg-secondary\/10,
+.bg-secondary\/15,
+.bg-secondary\/20 {
+    background-color: rgba(161, 161, 170, 0.16) !important;
+    color: var(--primary) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+.text-primary-container {
+    color: var(--primary) !important;
+}
+
+a.bg-primary-container,
+button.bg-primary-container,
+a.bg-primary,
+button.bg-primary {
+    background-color: var(--primary) !important;
+    color: var(--on-primary) !important;
+}
+
+a.bg-primary-container *,
+button.bg-primary-container *,
+a.bg-primary *,
+button.bg-primary * {
+    color: var(--on-primary) !important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    background-color: var(--input-bg) !important;
+    color: var(--on-surface) !important;
+    border: 1px solid var(--outline-variant) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary) !important;
+    outline: none !important;
+}
+
+.divide-surface-container > :not([hidden]) ~ :not([hidden]),
+.border-outline-variant\/20,
+.border-outline-variant\/25,
+.border-outline-variant\/30,
+.border-outline-variant\/15 {
+    border-color: var(--card-border) !important;
+}
+
+/* Checkbox & Toggle Switch in Monochrome */
+.peer:checked ~ div {
+    background-color: var(--primary) !important;
+}
+
+.peer:checked ~ div::after {
+    background-color: var(--on-primary) !important;
+    border-color: var(--on-primary) !important;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--primary);
+}
+
+/* Legacy enroll.html Brand Overrides for Grey/Black/White consistency */
+.bg-brand-black { background-color: var(--surface) !important; }
+.bg-brand-darker, .bg-brand-surface { background-color: var(--surface-container-low) !important; border-color: var(--card-border) !important; }
+.text-brand-cyan { color: var(--primary) !important; }
+.bg-brand-cyan { background-color: var(--primary) !important; color: var(--on-primary) !important; }
+.bg-brand-cyan-dim { background-color: rgba(161, 161, 170, 0.16) !important; border-color: var(--card-border) !important; }
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-container-lowest);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--surface-container-highest);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--outline);
+}
+
+.error-msg {
+    background: rgba(220, 38, 38, 0.14);
+    border-left: 4px solid var(--error);
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.success-msg {
+    background: rgba(161, 161, 170, 0.16);
+    border-left: 4px solid var(--primary);
+    color: var(--primary);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 10px;
+}

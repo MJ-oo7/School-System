@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Registrar Portal — Faculty &amp; Grade Encoding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../shared/js/api.js"></script>
+    <link rel="stylesheet" href="css/grades.css">
+    <script src="js/grades.js" defer></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+    <!-- Fixed Top Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-sm">
+        <div class="h-16 w-full px-gutter-lg flex items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-md">
+                <div class="w-9 h-9 rounded-lg bg-primary text-on-primary font-headline-sm flex items-center justify-center font-bold">
+                    IT
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-headline-sm text-headline-sm text-primary tracking-tight">INSTITUTE OF TECHNOLOGY</span>
+                    <span class="font-label-caps text-label-caps text-secondary uppercase">Registrar Portal</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-space-sm">
+                <div class="hidden xl:flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded-lg border border-outline-variant">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span class="font-label-code text-label-code text-on-surface-variant">AY 2026-2027 • Grade Encoding</span>
+                </div>
+                <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                    <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                    <span data-theme-label>Light Mode</span>
+                </button>
+                <div class="hidden lg:flex items-center gap-space-xs bg-surface-container px-space-sm py-1.5 rounded-lg border border-outline-variant">
+                    <span class="material-symbols-outlined text-[16px] text-secondary">badge</span>
+                    <span class="font-label-code text-label-code text-on-surface">Admin Registrar #ADMIN-001</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-lowest z-40 flex flex-col py-space-md">
+        <div class="px-space-md mb-space-sm">
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Core Registry Workflows</span>
+        </div>
+        <nav class="flex-1 px-space-sm flex flex-col gap-1">
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="admin.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">how_to_reg</span>Admissions &amp; Enrollment
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="courses.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">menu_book</span>Courses &amp; Curriculum
+            </a>
+            <a aria-current="page" class="flex items-center px-space-sm py-2 transition-all bg-primary text-on-primary font-semibold rounded-lg font-body-sm text-body-sm" href="grades.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">edit_note</span>Grade Encoding
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="create-account.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">manage_accounts</span>Account Provisioning
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="tuition.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">account_balance_wallet</span>Tuition &amp; Ledger
+            </a>
+        </nav>
+        <div class="px-space-md pt-space-sm mt-auto">
+            <div class="bg-surface-container p-space-sm rounded-lg border border-outline-variant flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-caps text-label-caps text-on-surface-variant">Grade Sync</span>
+                    <span class="font-label-code text-label-code text-primary font-bold">OPERATIONAL</span>
+                </div>
+                <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="pl-64">
+        <main class="relative pt-16 w-full bg-surface min-h-screen">
+            <div class="flex flex-col w-full">
+                <div class="p-gutter-lg space-y-space-lg max-w-[1600px] mx-auto w-full">
+
+                    <!-- Hero Header Card -->
+                    <div class="rounded-xl bg-surface-container-low border border-outline-variant p-space-lg shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg">
+                        <div class="flex flex-col gap-space-xs max-w-3xl">
+                            <div class="flex items-center gap-space-sm flex-wrap">
+                                <span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-label-code text-[11px] uppercase tracking-widest">
+                                    REGISTRAR ENCODING ENGINE v4.2
+                                </span>
+                                <span class="flex items-center gap-1.5 font-label-code text-[11px] text-on-surface-variant">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    SYNCED WITH STUDENT PORTAL
+                                </span>
+                            </div>
+                            <h1 class="font-headline-xl text-headline-lg text-primary font-bold tracking-tight">
+                                Faculty Grade Encoding &amp; Evaluation Portal
+                            </h1>
+                            <p class="font-body-md text-body-md text-on-surface-variant">
+                                Select a degree course, semester, and subject to input Prelim, Midterm, and Final grades for enrolled students. Saved grades sync immediately to each student's portal.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-space-sm shrink-0">
+                            <button type="button" onclick="saveGradesBatch(false)" id="save-draft-btn" class="flex items-center gap-1.5 px-space-md py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary border border-outline-variant font-label-code text-label-code transition-all">
+                                <span class="material-symbols-outlined text-[18px]">save</span>
+                                <span>Save Draft Grades</span>
+                            </button>
+                            <button type="button" onclick="saveGradesBatch(true)" id="lock-grades-btn" class="flex items-center gap-1.5 px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-label-code text-label-code font-bold transition-all shadow-sm">
+                                <span class="material-symbols-outlined text-[18px]">lock</span>
+                                <span>Submit &amp; Lock Grades</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Metrics Bento Strip -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+                        <!-- Subject Selector Card (7 Cols) -->
+                        <div class="lg:col-span-7 bg-surface-container-low rounded-xl border border-outline-variant p-space-md flex flex-col justify-between gap-space-md">
+                            <div class="flex flex-wrap items-center justify-between gap-space-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+                                    <span class="font-label-code text-label-code text-primary font-bold" id="subject-term-badge">AY 2026-2027 • Select Subject</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 bg-surface-container px-3 py-1 rounded-lg border border-outline-variant">
+                                    <span class="material-symbols-outlined text-primary text-[16px]">person</span>
+                                    <span class="font-label-code text-[12px] text-primary" id="subject-instructor-badge">Instructor: N/A</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-space-sm">
+                                <div class="sm:col-span-4 flex flex-col gap-1">
+                                    <label for="grade-course-select" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Course</label>
+                                    <select id="grade-course-select" onchange="handleCourseOrSemChange()" class="w-full h-10 px-3 rounded-lg font-label-code text-label-code cursor-pointer"></select>
+                                </div>
+                                <div class="sm:col-span-3 flex flex-col gap-1">
+                                    <label for="grade-sem-select" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Semester</label>
+                                    <select id="grade-sem-select" onchange="handleCourseOrSemChange()" class="w-full h-10 px-3 rounded-lg font-label-code text-label-code cursor-pointer">
+                                        <option value="1" selected>1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                    </select>
+                                </div>
+                                <div class="sm:col-span-5 flex flex-col gap-1">
+                                    <label for="grade-subject-select" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Subject</label>
+                                    <select id="grade-subject-select" onchange="loadSelectedSubjectRoster()" class="w-full h-10 px-3 rounded-lg font-body-sm text-body-sm cursor-pointer"></select>
+                                </div>
+                            </div>
+
+                            <!-- Period Focus Filter Tabs -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                                <div class="flex items-center gap-1.5 overflow-x-auto">
+                                    <button type="button" onclick="setPeriodFilter('all')" data-period="all" class="period-filter-tab px-3 py-1.5 rounded-lg font-label-code text-[11px] bg-primary text-on-primary font-bold">All Periods</button>
+                                    <button type="button" onclick="setPeriodFilter('prelim')" data-period="prelim" class="period-filter-tab px-3 py-1.5 rounded-lg font-label-code text-[11px] bg-surface-container border border-outline-variant text-on-surface-variant hover:text-primary">Prelim (30%)</button>
+                                    <button type="button" onclick="setPeriodFilter('midterm')" data-period="midterm" class="period-filter-tab px-3 py-1.5 rounded-lg font-label-code text-[11px] bg-surface-container border border-outline-variant text-on-surface-variant hover:text-primary">Midterm (30%)</button>
+                                    <button type="button" onclick="setPeriodFilter('final')" data-period="final" class="period-filter-tab px-3 py-1.5 rounded-lg font-label-code text-[11px] bg-surface-container border border-outline-variant text-on-surface-variant hover:text-primary">Final (40%)</button>
+                                </div>
+                                <span class="font-label-code text-[11px] text-on-surface-variant" id="subject-room-badge">Room: N/A</span>
+                            </div>
+                        </div>
+
+                        <!-- Live Metrics & Search Card (5 Cols) -->
+                        <div class="lg:col-span-5 bg-surface-container-low rounded-xl border border-outline-variant p-space-md flex flex-col justify-between gap-space-md">
+                            <div class="flex items-center justify-between">
+                                <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Encoding Metrics</span>
+                                <span class="font-label-code text-[11px] text-primary bg-surface-container-high border border-outline-variant px-2 py-0.5 rounded">AUTO-COMPUTE ENABLED</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-space-sm">
+                                <div class="p-3 rounded-lg bg-surface-container border border-outline-variant flex flex-col">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Roster Completion</span>
+                                    <div class="flex items-baseline gap-1.5 mt-1">
+                                        <span class="font-metric-num text-headline-md text-primary font-bold" id="metric-completion">0 / 0</span>
+                                        <span class="font-label-code text-[11px] text-on-surface-variant" id="metric-completion-pct">(0%)</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-surface-container-lowest rounded-full mt-2 overflow-hidden">
+                                        <div class="h-full bg-primary transition-all duration-300" id="metric-completion-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-3 rounded-lg bg-surface-container border border-outline-variant flex flex-col">
+                                    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Section Percentage Avg</span>
+                                    <div class="flex items-baseline gap-1.5 mt-1">
+                                        <span class="font-metric-num text-headline-md text-primary font-bold" id="metric-avg-gwa">N/A</span>
+                                    </div>
+                                    <span class="font-label-code text-[11px] text-on-surface-variant mt-2">Passing Threshold: ≥ 75.00%</span>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px] pointer-events-none">search</span>
+                                <input id="roster-search-input" oninput="syncRosterSearch(this.value)" class="w-full h-10 pl-9 pr-4 rounded-lg font-body-sm text-body-sm" placeholder="Search enrolled student by name (case-insensitive)..." type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grading Scale Banner -->
+                    <div class="rounded-xl bg-surface-container-low border border-outline-variant p-space-md flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                        <div class="flex items-start md:items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary text-[20px]">gavel</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-label-caps text-label-caps text-primary uppercase font-bold">Percentage Grading Standard (0% – 100%)</span>
+                                <div class="flex flex-wrap gap-x-4 gap-y-1 font-label-code text-[12px] text-on-surface-variant mt-0.5">
+                                    <span><strong class="text-primary">97 – 100%</strong> Excellent</span>
+                                    <span><strong class="text-primary">90 – 96%</strong> Superior</span>
+                                    <span><strong class="text-primary">82 – 89%</strong> Satisfactory</span>
+                                    <span><strong class="text-primary">75 – 81%</strong> Passing</span>
+                                    <span><strong class="text-error">Below 75%</strong> Failed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="font-label-code text-[12px] text-primary bg-surface-container border border-outline-variant px-3 py-1.5 rounded-lg shrink-0">
+                            Leave blank for pending terms (0 to 100)
+                        </div>
+                    </div>
+
+                    <div id="grades-feedback" class="hidden"></div>
+
+                    <!-- Master Student Roster Grid -->
+                    <div class="rounded-xl bg-surface-container-low border border-outline-variant overflow-hidden shadow-sm">
+                        <div class="p-space-md bg-surface-container border-b border-outline-variant flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <span class="material-symbols-outlined text-primary text-[22px]">format_list_numbered</span>
+                                <h2 class="font-headline-sm text-headline-sm text-primary font-bold">Class Master Roster</h2>
+                                <span class="px-2.5 py-0.5 rounded bg-surface-container-high border border-outline-variant font-label-code text-[11px] text-on-surface-variant" id="roster-count-badge">0 Enrolled Students</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <div class="relative w-full sm:w-80">
+                                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px] pointer-events-none">search</span>
+                                    <input id="roster-table-search-input" oninput="syncRosterSearch(this.value)" class="w-full h-9 pl-9 pr-14 rounded-lg font-body-sm text-body-sm" placeholder="Find student by name (case-insensitive)..." type="text">
+                                    <button type="button" onclick="clearRosterSearch()" id="clear-roster-search-btn" class="hidden absolute right-2 top-1.5 px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant hover:text-primary font-label-code text-[11px]">Clear</button>
+                                </div>
+                                <span class="font-label-code text-[12px] text-on-surface-variant hidden xl:inline">30% Prelim + 30% Midterm + 40% Final</span>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto bg-surface-container-lowest">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-surface-container font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider border-b border-outline-variant">
+                                        <th class="py-3 px-4">Student ID / App ID</th>
+                                        <th class="py-3 px-4">Student Full Name</th>
+                                        <th class="py-3 px-3 text-center col-prelim">Prelim (%)</th>
+                                        <th class="py-3 px-3 text-center col-midterm">Midterm (%)</th>
+                                        <th class="py-3 px-3 text-center col-final">Final (%)</th>
+                                        <th class="py-3 px-4 text-right">Average (%)</th>
+                                        <th class="py-3 px-4">Remarks / Status</th>
+                                        <th class="py-3 px-4 text-center">Lock State</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roster-body" class="divide-y divide-surface-container font-body-sm text-body-sm">
+                                    <!-- Dynamically populated by js/grades.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg bg-primary text-on-primary shadow-xl opacity-0 pointer-events-none transition-all duration-300 font-label-code text-label-code font-bold">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <span id="toast-text">Grades saved.</span>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Registrar Portal — Courses &amp; Curriculum Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../shared/js/api.js"></script>
+    <link rel="stylesheet" href="css/courses.css">
+    <script src="js/courses.js" defer></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+    <!-- Fixed Top Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-sm">
+        <div class="h-16 w-full px-gutter-lg flex items-center justify-between gap-space-md">
+            <div class="flex items-center gap-space-md">
+                <div class="w-9 h-9 rounded-lg bg-primary text-on-primary font-headline-sm flex items-center justify-center font-bold">
+                    IT
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-headline-sm text-headline-sm text-primary tracking-tight">INSTITUTE OF TECHNOLOGY</span>
+                    <span class="font-label-caps text-label-caps text-secondary uppercase">Registrar Portal</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-space-sm">
+                <div class="hidden xl:flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded-lg border border-outline-variant">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span class="font-label-code text-label-code text-on-surface-variant" id="header-term-pill">AY 2026-2027 • 1st Sem</span>
+                </div>
+                <button type="button" onclick="togglePortalTheme()" data-theme-toggle class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code transition-colors">
+                    <span class="material-symbols-outlined text-[18px]" data-theme-icon>light_mode</span>
+                    <span data-theme-label>Light Mode</span>
+                </button>
+                <div class="hidden lg:flex items-center gap-space-xs bg-surface-container px-space-sm py-1.5 rounded-lg border border-outline-variant">
+                    <span class="material-symbols-outlined text-[16px] text-secondary">badge</span>
+                    <span class="font-label-code text-label-code text-on-surface">Admin Registrar #ADMIN-001</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fixed Left Sidebar -->
+    <aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-lowest z-40 flex flex-col py-space-md">
+        <div class="px-space-md mb-space-sm">
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Core Registry Workflows</span>
+        </div>
+        <nav class="flex-1 px-space-sm flex flex-col gap-1">
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="admin.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">how_to_reg</span>Admissions &amp; Enrollment
+            </a>
+            <a aria-current="page" class="flex items-center px-space-sm py-2 transition-all bg-primary text-on-primary font-semibold rounded-lg font-body-sm text-body-sm" href="courses.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">menu_book</span>Courses &amp; Curriculum
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="grades.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">edit_note</span>Grade Encoding
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="create-account.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">manage_accounts</span>Account Provisioning
+            </a>
+            <a class="flex items-center px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all font-body-sm text-body-sm" href="tuition.html">
+                <span class="material-symbols-outlined mr-space-sm text-[20px]">account_balance_wallet</span>Tuition &amp; Ledger
+            </a>
+        </nav>
+        <div class="px-space-md pt-space-sm mt-auto">
+            <div class="bg-surface-container p-space-sm rounded-lg border border-outline-variant flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="font-label-caps text-label-caps text-on-surface-variant">Directory Sync</span>
+                    <span class="font-label-code text-label-code text-primary font-bold">OPERATIONAL</span>
+                </div>
+                <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="pl-64">
+        <main class="relative pt-16 w-full bg-surface min-h-screen">
+            <div class="flex flex-col w-full">
+                <div class="p-gutter-lg space-y-space-lg max-w-[1600px] mx-auto w-full">
+
+                    <!-- Top Breadcrumb & Action Bar -->
+                    <section class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-low border border-outline-variant shadow-sm">
+                        <div class="flex items-center gap-space-md min-w-0">
+                            <div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined text-[24px]">verified</span>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <div class="flex items-center gap-space-xs flex-wrap">
+                                    <span class="font-headline-md text-headline-md text-primary tracking-tight font-bold">Academic Courses &amp; Curriculum Architecture</span>
+                                    <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-code text-[11px] uppercase border border-outline-variant">21-UNIT LAW</span>
+                                </div>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                    Publish degree courses, configure 1st &amp; 2nd semester subjects (exactly 21.0 units), and assign subject instructors &amp; rooms.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-space-sm shrink-0">
+                            <button onclick="startNewCourseDraft()" class="flex items-center gap-1.5 px-space-md py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary font-label-code text-label-code border border-outline-variant transition-colors" type="button">
+                                <span class="material-symbols-outlined text-[18px]">add_box</span>
+                                <span>New Course Draft</span>
+                            </button>
+                            <button id="btn-publish-program" class="flex items-center gap-1.5 px-space-lg py-2 rounded-lg bg-primary text-on-primary font-label-code text-label-code font-bold transition-all" type="button">
+                                <span class="material-symbols-outlined text-[18px]">lock</span>
+                                <span id="btn-publish-text">Publish Academic Program &amp; Lock</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Bento Row: Staging Metadata + Staffing Compliance Widget -->
+                    <section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+                        <!-- LEFT (8 Cols): Course Metadata & Live Load Balancer -->
+                        <div class="lg:col-span-8 bg-surface-container-low rounded-xl p-space-lg border border-outline-variant shadow-sm flex flex-col justify-between gap-space-md">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+                                    <div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block" id="builder-mode-label">Staging Environment • Auto-ID Active</span>
+                                        <h2 class="font-headline-sm text-headline-sm text-primary font-bold" id="builder-heading-title">Publish New Degree Course Curriculum</h2>
+                                    </div>
+                                </div>
+                                <div class="px-3 py-1 rounded-full bg-surface-container border border-outline-variant font-label-code text-label-code text-primary" id="package-id-badge">
+                                    PKG-2026-BSIT-S1
+                                </div>
+                            </div>
+
+                            <!-- Metadata Form Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-space-md">
+                                <div class="md:col-span-3 space-y-1">
+                                    <div class="flex items-center justify-between">
+                                        <label for="input-course-code" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Course ID (Self-Generated)</label>
+                                        <span class="font-label-code text-[11px] text-on-surface-variant flex items-center gap-0.5" title="Course ID is self-generated and locked">
+                                            <span class="material-symbols-outlined text-[13px]">lock</span>
+                                            <span>Locked</span>
+                                        </span>
+                                    </div>
+                                    <input class="w-full px-3 py-2 rounded-lg font-label-code text-label-code font-bold cursor-not-allowed opacity-85 bg-surface-container text-on-surface-variant" id="input-course-code" type="text" value="BSIT-001" readonly tabindex="-1" aria-readonly="true" title="Self-generated Course ID (read-only)">
+                                </div>
+
+                                <div class="md:col-span-5 space-y-1">
+                                    <label for="input-course-title" class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Course / Degree Program Title</label>
+                                    <input class="w-full px-3 py-2 rounded-lg font-body-sm text-body-sm" id="input-course-title" type="text" placeholder="e.g., Bachelor of Science in Information Technology" value="Bachelor of Science in Information Technology">
+                                </div>
+
+                                <div class="md:col-span-2 space-y-1">
+                                    <label for="select-college-dept" class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Department</label>
+                                    <select id="select-college-dept" class="w-full px-2.5 py-2 rounded-lg font-body-sm text-body-sm cursor-pointer">
+                                        <option value="CCS" selected>CCS</option>
+                                        <option value="COE">COE</option>
+                                        <option value="CBA">CBA</option>
+                                        <option value="CAS">CAS</option>
+                                    </select>
+                                </div>
+
+                                <div class="md:col-span-2 space-y-1">
+                                    <label for="select-semester" class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Semester</label>
+                                    <select id="select-semester" onchange="handleSemesterChange()" class="w-full px-2.5 py-2 rounded-lg font-label-code text-label-code cursor-pointer">
+                                        <option value="1" selected>1st Sem</option>
+                                        <option value="2">2nd Sem</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Live Statutory 21-Unit Load Balancer -->
+                            <div class="p-space-md rounded-lg bg-surface-container border border-outline-variant space-y-2">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">balance</span>
+                                        <span class="font-label-caps text-label-caps text-primary uppercase">Live Statutory Academic Load Balancer:</span>
+                                        <span class="font-metric-num text-headline-md text-primary font-bold" id="counter-total">21.0</span>
+                                        <span class="font-label-code text-label-code text-on-surface-variant">/ 21.0 UNITS</span>
+                                    </div>
+                                    <span class="px-2.5 py-1 rounded-full bg-surface-container-high border border-outline-variant font-label-caps text-label-caps text-primary" id="load-status-badge">
+                                        VALIDATED • READY TO PUBLISH
+                                    </span>
+                                </div>
+                                <div class="w-full h-2.5 rounded-full bg-surface-container-lowest overflow-hidden flex border border-outline-variant">
+                                    <div class="h-full bg-primary transition-all duration-300" id="bar-lecture" style="width: 85.7%;"></div>
+                                    <div class="h-full bg-outline transition-all duration-300" id="bar-lab" style="width: 14.3%;"></div>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-between font-label-code text-label-code text-on-surface-variant">
+                                    <span>Lecture Units: <strong class="text-primary" id="val-lecture">18.0</strong> • Lab Units: <strong class="text-primary" id="val-lab">3.0</strong></span>
+                                    <span class="text-primary font-semibold">Balance Delta: <span id="val-delta">0.0 Units Balanced</span></span>
+                                </div>
+                            </div>
+
+                            <div id="publish-feedback" class="hidden"></div>
+                        </div>
+
+                        <!-- RIGHT (4 Cols): Faculty Staffing Compliance Widget -->
+                        <div class="lg:col-span-4 bg-surface-container-low rounded-xl p-space-lg border border-outline-variant shadow-sm flex flex-col justify-between gap-space-md">
+                            <div class="space-y-space-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-primary text-[20px]">assignment_ind</span>
+                                        <span class="font-label-caps text-label-caps text-primary uppercase font-bold tracking-wider">Instructor Staffing Status</span>
+                                    </div>
+                                    <span class="font-label-code text-label-code text-on-surface-variant" id="active-semester-badge">1st Sem</span>
+                                </div>
+                                <div class="flex items-baseline justify-between pt-2">
+                                    <div>
+                                        <div class="font-metric-num text-display-lg-mobile text-primary font-bold" id="faculty-ratio-display">0 / 7</div>
+                                        <span class="font-body-sm text-body-sm text-on-surface-variant">Subjects with Assigned Instructor</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-metric-num text-headline-md text-primary font-bold" id="faculty-percent-display">0%</div>
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Staffed</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-space-sm pt-2">
+                                    <div class="p-space-sm rounded-lg bg-surface-container border border-outline-variant">
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Total Subjects</span>
+                                        <span class="font-metric-num text-headline-md text-primary font-bold" id="tally-subjects">7</span>
+                                    </div>
+                                    <div class="p-space-sm rounded-lg bg-surface-container border border-outline-variant">
+                                        <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Remaining Units</span>
+                                        <span class="font-metric-num text-headline-md text-primary font-bold" id="tally-remaining">0.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-space-sm border-t border-outline-variant flex items-center justify-between font-label-code text-label-code text-on-surface-variant">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-primary"></span>
+                                    Syncs live to Student Portal
+                                </span>
+                                <button type="button" id="btn-reset" class="text-primary hover:underline">Reset Rows</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CORE SECTION: Curriculum Subject Composition & Instructor Assignment Table -->
+                    <section class="bg-surface-container-low rounded-xl p-space-lg border border-outline-variant shadow-sm space-y-space-md">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+                            <div class="flex items-center gap-space-sm">
+                                <span class="material-symbols-outlined text-primary text-[22px]">format_list_bulleted</span>
+                                <div>
+                                    <h3 class="font-headline-sm text-headline-sm text-primary font-bold">Curriculum Subject Composition &amp; Instructor Assignment</h3>
+                                    <p class="font-body-sm text-body-sm text-on-surface-variant">Assign instructors directly on each subject row or click the faculty selector to pick from staff presets.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-space-xs">
+                                <button class="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary font-label-code text-label-code border border-outline-variant transition-colors" id="btn-add-subject" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">add</span>
+                                    <span>Add Subject</span>
+                                </button>
+                                <button class="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-code text-label-code border border-outline-variant transition-colors" id="btn-auto-codes" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">tag</span>
+                                    <span>Auto-Gen Codes</span>
+                                </button>
+                                <button class="flex items-center gap-1 px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-code text-label-code border border-outline-variant transition-colors" id="btn-auto-balance" type="button">
+                                    <span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+                                    <span>Auto 3.0 Distribution (21u)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Subject & Instructor Table -->
+                        <div class="overflow-x-auto rounded-lg bg-surface-container-lowest border border-outline-variant">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider border-b border-outline-variant">
+                                        <th class="py-3 px-4 w-28"># / Subject ID</th>
+                                        <th class="py-3 px-4 w-44">Subject Code</th>
+                                        <th class="py-3 px-4 min-w-[230px]">Descriptive Title</th>
+                                        <th class="py-3 px-4 w-36">Category</th>
+                                        <th class="py-3 px-4 w-36 text-center">Units</th>
+                                        <th class="py-3 px-4 min-w-[260px]">Assigned Subject Instructor</th>
+                                        <th class="py-3 px-4 w-32">Room / Lab</th>
+                                        <th class="py-3 px-4 w-20 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subject-rows-container" class="font-body-sm text-body-sm text-on-surface divide-y divide-surface-container">
+                                    <!-- Dynamically rendered by js/courses.js -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Live Tally Footer -->
+                        <div class="bg-surface-container rounded-lg p-space-md border border-outline-variant flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+                            <div class="flex flex-wrap items-center gap-space-md font-label-code text-label-code">
+                                <span>Summed Weight: <strong class="text-primary" id="tally-units">21.0 Academic Units</strong></span>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-primary font-label-code text-label-code" id="tally-status-text">
+                                <span class="material-symbols-outlined text-[18px]">task_alt</span>
+                                <span>Unit requirement strictly met: Exactly 21.0 units allocated.</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LOWER DIRECTORY: Published Courses & Active Curriculum Directory -->
+                    <section class="bg-surface-container-low rounded-xl p-space-lg border border-outline-variant shadow-sm space-y-space-md">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+                            <div>
+                                <span class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Institutional Index • AY 2026-2027</span>
+                                <h3 class="font-headline-md text-headline-md text-primary font-bold">Published Courses &amp; Active Curriculum Directory</h3>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                                    Manage published 21-unit courses, inspect instructor assignments, edit 1st/2nd semester curricula, or deactivate/delete courses.
+                                </p>
+                            </div>
+                            <button onclick="loadPublishedCourses()" class="bg-surface-container-high hover:bg-surface-bright text-primary px-space-md py-2 rounded-lg border border-outline-variant flex items-center gap-1.5 font-label-code text-label-code transition-colors" type="button">
+                                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                                <span>Refresh Catalog</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+                            <div class="md:col-span-8 relative">
+                                <span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">search</span>
+                                <input id="course-search-input" oninput="renderPublishedCoursesTable()" class="w-full pl-10 pr-4 py-2 rounded-lg font-body-sm text-body-sm" placeholder="Filter published courses by Course ID or Program Title..." type="text">
+                            </div>
+                            <div class="md:col-span-4 text-right">
+                                <span class="font-label-code text-label-code text-on-surface-variant" id="catalog-count-label">Loading programs...</span>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-lg bg-surface-container-lowest border border-outline-variant">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider border-b border-outline-variant">
+                                        <th class="py-3.5 px-4 w-36">Degree Code</th>
+                                        <th class="py-3.5 px-4">Program Title &amp; Academic Year</th>
+                                        <th class="py-3.5 px-4 w-44">1st Semester Load</th>
+                                        <th class="py-3.5 px-4 w-44">2nd Semester Load</th>
+                                        <th class="py-3.5 px-4 w-44">Registry Status</th>
+                                        <th class="py-3.5 px-4 w-72 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="published-courses-tbody" class="font-body-sm text-body-sm text-on-surface divide-y divide-surface-container">
+                                    <!-- Dynamically populated from GET /programs/all -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Course Curriculum & Instructor Inspector Panel -->
+                        <div id="course-inspector-panel" class="hidden bg-surface-container-lowest rounded-xl p-space-lg border border-outline-variant space-y-space-md"></div>
+                    </section>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ASSIGN SUBJECT INSTRUCTOR MODAL -->
+    <div id="faculty-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden">
+        <div class="w-full max-w-xl mx-4 rounded-xl bg-surface-container-low border border-outline-variant shadow-2xl flex flex-col overflow-hidden">
+            <div class="p-space-lg bg-surface-container border-b border-outline-variant flex items-center justify-between">
+                <div class="flex items-center gap-space-sm">
+                    <div class="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold">
+                        <span class="material-symbols-outlined text-[20px]">person_search</span>
+                    </div>
+                    <div>
+                        <h3 class="font-headline-sm text-headline-sm text-primary font-bold">Assign Subject Instructor</h3>
+                        <span class="font-label-code text-label-code text-on-surface-variant" id="modal-subject-indicator">Subject</span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeFacultyModal()" class="w-8 h-8 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Custom Manual Instructor Input -->
+            <div class="p-space-md bg-surface-container-lowest border-b border-outline-variant space-y-3">
+                <span class="font-label-caps text-label-caps text-primary uppercase block">Input Custom Instructor &amp; Room</span>
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                    <input id="modal-custom-instructor" type="text" placeholder="Enter Instructor Full Name" class="sm:col-span-7 px-3 py-2 rounded-lg font-body-sm text-body-sm">
+                    <input id="modal-custom-room" type="text" placeholder="Room (e.g. TECH-402)" class="sm:col-span-3 px-3 py-2 rounded-lg font-label-code text-label-code">
+                    <button type="button" onclick="applyCustomFaculty()" class="sm:col-span-2 px-3 py-2 rounded-lg bg-primary text-on-primary font-label-code text-label-code font-bold">Assign</button>
+                </div>
+            </div>
+
+            <!-- Saved Instructors Directory (Starts Empty) -->
+            <div class="p-space-md space-y-2 max-h-72 overflow-y-auto" id="faculty-preset-list">
+                <!-- Populated by js/courses.js -->
+            </div>
+
+            <div class="p-space-md bg-surface-container border-t border-outline-variant flex items-center justify-between">
+                <button type="button" onclick="closeFacultyModal()" class="px-4 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant text-primary font-label-code text-label-code">Cancel</button>
+                <span class="font-label-code text-[11px] text-on-surface-variant">Type any instructor name above or leave blank for N/A</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg bg-primary text-on-primary shadow-xl opacity-0 pointer-events-none transition-all duration-300 font-label-code text-label-code font-bold">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <span id="toast-text">Action completed.</span>
+    </div>
+
+</body>
+
+</html>
